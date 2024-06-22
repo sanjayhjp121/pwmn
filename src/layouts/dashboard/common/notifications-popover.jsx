@@ -28,8 +28,8 @@ import Scrollbar from 'src/components/scrollbar';
 const NOTIFICATIONS = [
   {
     id: faker.string.uuid(),
-    title: 'Your order is placed',
-    description: 'waiting for shipping',
+    title: 'Your password is saved',
+    description: 'waiting for confirmation',
     avatar: null,
     type: 'order_placed',
     createdAt: set(new Date(), { hours: 10, minutes: 30 }),
@@ -38,7 +38,7 @@ const NOTIFICATIONS = [
   {
     id: faker.string.uuid(),
     title: faker.person.fullName(),
-    description: 'answered to your comment on the Minimal',
+    description: 'answered to your comment on the password manager',
     avatar: '/assets/images/avatars/avatar_2.jpg',
     type: 'friend_interactive',
     createdAt: sub(new Date(), { hours: 3, minutes: 30 }),
@@ -64,8 +64,8 @@ const NOTIFICATIONS = [
   },
   {
     id: faker.string.uuid(),
-    title: 'Delivery processing',
-    description: 'Your order is being shipped',
+    title: 'Client added',
+    description: 'Your client is being added',
     avatar: null,
     type: 'order_shipped',
     createdAt: sub(new Date(), { days: 3, hours: 3, minutes: 30 }),
