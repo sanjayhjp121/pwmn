@@ -4,14 +4,18 @@ import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
+import Dialog from '@mui/material/Dialog';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
+import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { users } from 'src/_mock/user';
-
+import { users as initialUsers } from 'src/_mock/user'; // Renamed to initialUsers to avoid confusion with state variable
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
@@ -25,17 +29,18 @@ import { emptyRows, applyFilter, getComparator } from '../utils';
 // ----------------------------------------------------------------------
 
 export default function UserPage() {
+  const [users, setUsers] = useState(initialUsers); // State variable for users
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
   const [selected, setSelected] = useState([]);
-
   const [orderBy, setOrderBy] = useState('name');
-
   const [filterName, setFilterName] = useState('');
-
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [openDialog, setOpenDialog] = useState(false);
+  const [newUserName, setNewUserName] = useState('');
+  const [newUserCompany, setNewUserCompany] = useState('');
+  const [newUserStatus, setNewUserStatus] = useState('active'); // Default status for new user
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -86,6 +91,36 @@ export default function UserPage() {
     setFilterName(event.target.value);
   };
 
+  const handleNewUser = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    // Clear input fields
+    setNewUserName('');
+    setNewUserCompany('');
+    setNewUserStatus('active');
+  };
+
+  const handleCreateUser = () => {
+    // Validation logic can be added here if needed
+    const newUser = {
+      id: users.length + 1, // Simple ID generation logic
+      name: newUserName,
+      company: newUserCompany,
+      isVerified: false,
+      status: newUserStatus,
+      avatarUrl: '', // Default or placeholder avatar URL
+    };
+    setUsers([...users, newUser]);
+    setOpenDialog(false);
+    // Clear input fields after adding user
+    setNewUserName('');
+    setNewUserCompany('');
+    setNewUserStatus('active');
+  };
+
   const dataFiltered = applyFilter({
     inputData: users,
     comparator: getComparator(order, orderBy),
@@ -99,7 +134,7 @@ export default function UserPage() {
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Users</Typography>
 
-        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
+        <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleNewUser}>
           New User
         </Button>
       </Stack>
@@ -166,6 +201,49 @@ export default function UserPage() {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
+
+      {/* Dialog for adding new user */}
+      <Dialog open={openDialog} onClose={handleCloseDialog}>
+        <DialogTitle>Add New User</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Name"
+            type="text"
+            fullWidth
+            value={newUserName}
+            onChange={(e) => setNewUserName(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            id="company"
+            label="Company"
+            type="text"
+            fullWidth
+            value={newUserCompany}
+            onChange={(e) => setNewUserCompany(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            id="status"
+            label="Status"
+            type="text"
+            fullWidth
+            value={newUserStatus}
+            onChange={(e) => setNewUserStatus(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleCreateUser} color="primary">
+            Add User
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 }
