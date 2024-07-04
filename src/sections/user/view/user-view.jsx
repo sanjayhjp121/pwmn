@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TextField from '@mui/material/TextField';
@@ -15,7 +17,6 @@ import DialogActions from '@mui/material/DialogActions';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
-import { users as initialUsers } from 'src/_mock/user'; // Renamed to initialUsers to avoid confusion with state variable
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
@@ -26,21 +27,32 @@ import TableEmptyRows from '../table-empty-rows';
 import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-// ----------------------------------------------------------------------
-
 export default function UserPage() {
-  const [users, setUsers] = useState(initialUsers); // State variable for users
+  const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [verified, setVerified] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [newUserName, setNewUserName] = useState('');
   const [newUserCompany, setNewUserCompany] = useState('');
-  const [newUserStatus, setNewUserStatus] = useState('active'); // Default status for new user
+  const [newUserStatus, setNewUserStatus] = useState('active');
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      const response = await axios.get('http://localhost:5002/user/listAllMember');
+      setUsers(response.data.data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+    }
+  };
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -97,28 +109,28 @@ export default function UserPage() {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-    // Clear input fields
     setNewUserName('');
     setNewUserCompany('');
+    setVerified(false);
     setNewUserStatus('active');
   };
 
-  const handleCreateUser = () => {
-    // Validation logic can be added here if needed
+  const handleCreateUser = async () => {
     const newUser = {
-      id: users.length + 1, // Simple ID generation logic
       name: newUserName,
       company: newUserCompany,
-      isVerified: false,
+      isVerified: verified,
       status: newUserStatus,
-      avatarUrl: '', // Default or placeholder avatar URL
+      avatarUrl: '',
     };
-    setUsers([...users, newUser]);
-    setOpenDialog(false);
-    // Clear input fields after adding user
-    setNewUserName('');
-    setNewUserCompany('');
-    setNewUserStatus('active');
+
+    try {
+      const response = await axios.post("http://localhost:5002/user/createMember", newUser);
+      setUsers([...users, response.data]);
+      handleCloseDialog();
+    } catch (error) {
+      console.error('Error creating user:', error);
+    }
   };
 
   const dataFiltered = applyFilter({
@@ -225,6 +237,14 @@ export default function UserPage() {
             value={newUserCompany}
             onChange={(e) => setNewUserCompany(e.target.value)}
           />
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Checkbox
+              checked={verified}
+              onChange={(e) => setVerified(e.target.checked)}
+              color="primary"
+            />
+            <Typography>Verified</Typography>
+          </div>
           <TextField
             margin="dense"
             id="status"
@@ -240,7 +260,7 @@ export default function UserPage() {
             Cancel
           </Button>
           <Button onClick={handleCreateUser} color="primary">
-            Add User
+            Add
           </Button>
         </DialogActions>
       </Dialog>

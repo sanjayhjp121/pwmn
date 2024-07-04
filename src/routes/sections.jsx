@@ -2,6 +2,8 @@ import { lazy, Suspense } from 'react';
 import { Outlet, Navigate, useRoutes } from 'react-router-dom';
 
 import DashboardLayout from 'src/layouts/dashboard';
+
+import RegisterView from 'src/sections/login/RegisterView';
 // import ClientDetails from 'src/sections/user/ClientDetails';
 
 export const IndexPage = lazy(() => import('src/pages/app'));
@@ -36,6 +38,7 @@ export default function Router() {
       path: 'login',
       element: <LoginPage />,
     },
+    { path: '/register', element: <RegisterView/>},
     {
       path: '404',
       element: <Page404 />,

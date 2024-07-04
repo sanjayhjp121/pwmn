@@ -1,13 +1,11 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
 
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
-// import Button from '@mui/material/Button';
-// import Divider from '@mui/material/Divider';
+import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
@@ -24,7 +22,7 @@ import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function LoginView() {
+export default function RegisterView() {
   const theme = useTheme();
 
   const router = useRouter();
@@ -33,6 +31,8 @@ export default function LoginView() {
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState(null);
 
   const handleClick = async () => {
@@ -40,9 +40,11 @@ export default function LoginView() {
     setError(null);
 
     try {
-      const response = await axios.post('http://localhost:5002/admin/login', {
+      const response = await axios.post('users/signup', {
         email,
         password,
+        full_name: fullName,
+        phone_number: phoneNumber,
       });
 
       if (response.data.code === 200) {
@@ -52,10 +54,10 @@ export default function LoginView() {
 
         router.push('/dashboard');
       } else {
-        setError('Login failed. Please check your credentials.');
+        setError('Registration failed. Please check your details.');
       }
     } catch (err) {
-      setError('An error occurred during login. Please try again.');
+      setError('An error occurred during registration. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -65,10 +67,24 @@ export default function LoginView() {
     <>
       <Stack spacing={3}>
         <TextField
+          name="fullName"
+          label="Full Name"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
+        />
+
+        <TextField
           name="email"
           label="Email address"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <TextField
+          name="phoneNumber"
+          label="Phone Number"
+          value={phoneNumber}
+          onChange={(e) => setPhoneNumber(e.target.value)}
         />
 
         <TextField
@@ -87,6 +103,7 @@ export default function LoginView() {
             ),
           }}
         />
+
       </Stack>
 
       {error && (
@@ -94,12 +111,6 @@ export default function LoginView() {
           {error}
         </Typography>
       )}
-
-      <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-        <Link variant="subtitle2" underline="hover">
-          Forgot password?
-        </Link>
-      </Stack>
 
       <LoadingButton
         fullWidth
@@ -110,7 +121,7 @@ export default function LoginView() {
         onClick={handleClick}
         loading={loading}
       >
-        Login
+        Register
       </LoadingButton>
     </>
   );
@@ -141,52 +152,20 @@ export default function LoginView() {
             maxWidth: 420,
           }}
         >
-          <Typography variant="h4">Sign in to Password Manager</Typography>
+          <Typography variant="h4">Register as Admin</Typography>
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-          Don’t have an account?
-          <Link component={RouterLink} to="/register" variant="subtitle2" sx={{ ml: 0.5 }}>
-          Get started
-          </Link>
+            Already have an account?
+            <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={() => router.push('/login')}>
+              Sign in
+            </Link>
           </Typography>
 
-          {/* <Stack direction="row" spacing={2}>
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:google-fill" color="#DF3E30" />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:facebook-fill" color="#1877F2" />
-            </Button>
-
-            <Button
-              fullWidth
-              size="large"
-              color="inherit"
-              variant="outlined"
-              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
-            >
-              <Iconify icon="eva:twitter-fill" color="#1C9CEA" />
-            </Button>
-          </Stack> */}
-
-          {/* <Divider sx={{ my: 3 }}>
+          <Divider sx={{ my: 3 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>
               OR
             </Typography>
-          </Divider> */}
+          </Divider>
 
           {renderForm}
         </Card>
