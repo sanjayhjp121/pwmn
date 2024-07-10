@@ -5,6 +5,7 @@ import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -13,12 +14,12 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
 import InputAdornment from '@mui/material/InputAdornment';
 
-import { useRouter } from 'src/routes/hooks';
+import { useRouter } from 'src/routes/hooks'; // Ensure this is the correct path
 
 import { bgGradient } from 'src/theme/css';
 
-import Logo from 'src/components/logo';
-import Iconify from 'src/components/iconify';
+import Logo from 'src/components/logo'; // Ensure this is the correct path
+import Iconify from 'src/components/iconify'; // Ensure this is the correct path
 
 // ----------------------------------------------------------------------
 
@@ -34,13 +35,15 @@ export default function RegisterView() {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState(null);
+  const [userType, setUserType] = useState('user');
 
-  const handleClick = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
-      const response = await axios.post('users/signup', {
+      const response = await axios.post(`http://localhost:5002/${userType}/signup`, {
         email,
         password,
         full_name: fullName,
@@ -52,7 +55,7 @@ export default function RegisterView() {
         localStorage.setItem('token', response.data.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
 
-        router.push('/dashboard');
+        router.push('/login');
       } else {
         setError('Registration failed. Please check your details.');
       }
@@ -64,7 +67,7 @@ export default function RegisterView() {
   };
 
   const renderForm = (
-    <>
+    <form onSubmit={handleSubmit}>
       <Stack spacing={3}>
         <TextField
           name="fullName"
@@ -103,7 +106,6 @@ export default function RegisterView() {
             ),
           }}
         />
-
       </Stack>
 
       {error && (
@@ -118,12 +120,11 @@ export default function RegisterView() {
         type="submit"
         variant="contained"
         color="inherit"
-        onClick={handleClick}
         loading={loading}
       >
         Register
       </LoadingButton>
-    </>
+    </form>
   );
 
   return (
@@ -160,6 +161,20 @@ export default function RegisterView() {
               Sign in
             </Link>
           </Typography>
+
+          <Stack direction="row" spacing={2}>
+
+            <Button
+              fullWidth
+              size="large"
+              color={userType === 'user' ? 'primary' : 'inherit'}
+              variant="outlined"
+              sx={{ borderColor: alpha(theme.palette.grey[500], 0.16) }}
+              onClick={() => setUserType('user')}
+            >
+              Admin
+            </Button>
+          </Stack>
 
           <Divider sx={{ my: 3 }}>
             <Typography variant="body2" sx={{ color: 'text.secondary' }}>

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom';
 
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
@@ -28,7 +27,6 @@ export default function UserTableRow({
   handleClick,
 }) {
   const [open, setOpen] = useState(null);
-  const navigate = useNavigate();
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -38,9 +36,6 @@ export default function UserTableRow({
     setOpen(null);
   };
 
-  const handleRowClick = () => {
-    navigate('/clientinfo');
-  };
 
   return (
     <>
@@ -49,7 +44,6 @@ export default function UserTableRow({
         tabIndex={-1}
         role="checkbox"
         selected={selected}
-        onClick={handleRowClick}
         style={{ cursor: 'pointer' }}
       >
         <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>

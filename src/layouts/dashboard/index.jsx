@@ -9,7 +9,7 @@ import Header from './header';
 
 // ----------------------------------------------------------------------
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children, userRole }) {
   const [openNav, setOpenNav] = useState(false);
 
   return (
@@ -23,7 +23,7 @@ export default function DashboardLayout({ children }) {
           flexDirection: { xs: 'column', lg: 'row' },
         }}
       >
-        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} />
+        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} userRole={userRole} />
 
         <Main>{children}</Main>
       </Box>
@@ -33,4 +33,5 @@ export default function DashboardLayout({ children }) {
 
 DashboardLayout.propTypes = {
   children: PropTypes.node,
+  userRole: PropTypes.string.isRequired, // Add userRole prop type
 };

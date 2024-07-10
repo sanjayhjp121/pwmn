@@ -25,7 +25,7 @@ import navConfig from './config-navigation';
 
 // ----------------------------------------------------------------------
 
-export default function Nav({ openNav, onCloseNav }) {
+export default function Nav({ openNav, onCloseNav, userRole }) {
   const pathname = usePathname();
 
   const upLg = useResponsive('up', 'lg');
@@ -64,7 +64,7 @@ export default function Nav({ openNav, onCloseNav }) {
 
   const renderMenu = (
     <Stack component="nav" spacing={0.5} sx={{ px: 2 }}>
-      {navConfig.map((item) => (
+      {navConfig(userRole).map((item) => (
         <NavItem key={item.title} item={item} />
       ))}
     </Stack>
@@ -131,6 +131,7 @@ export default function Nav({ openNav, onCloseNav }) {
 Nav.propTypes = {
   openNav: PropTypes.bool,
   onCloseNav: PropTypes.func,
+  userRole: PropTypes.string, // Add userRole prop type
 };
 
 // ----------------------------------------------------------------------

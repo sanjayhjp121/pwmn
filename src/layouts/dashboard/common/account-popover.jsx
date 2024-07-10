@@ -1,4 +1,5 @@
 import { useState } from 'react';
+// import { useRouter } from 'next/router';
 
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
@@ -10,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { account } from 'src/_mock/account';
+// import Link from 'next/link';
 
 // ----------------------------------------------------------------------
 
@@ -26,20 +28,28 @@ const MENU_OPTIONS = [
     label: 'Settings',
     icon: 'eva:settings-2-fill',
   },
+  {
+    label: 'Delete Account',
+    icon: 'eva:settings-2-fill',
+  },
 ];
 
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  // const router = useRouter();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
+  // const router = useRouter();
   const handleClose = () => {
     setOpen(null);
+    // router.push('/profile');
   };
+
 
   return (
     <>
@@ -105,7 +115,7 @@ export default function AccountPopover() {
         <MenuItem
           disableRipple
           disableTouchRipple
-          onClick={handleClose}
+          // onClick={handlelogout}
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
         >
           Logout
