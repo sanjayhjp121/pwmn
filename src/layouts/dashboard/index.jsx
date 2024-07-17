@@ -1,5 +1,5 @@
-import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useState, useCallback } from 'react';
 
 import Box from '@mui/material/Box';
 
@@ -12,6 +12,10 @@ import Header from './header';
 export default function DashboardLayout({ children, userRole }) {
   const [openNav, setOpenNav] = useState(false);
 
+  const onCloseNav = useCallback(() => {
+    setOpenNav(false);
+  }, []);
+
   return (
     <>
       <Header onOpenNav={() => setOpenNav(true)} />
@@ -23,7 +27,7 @@ export default function DashboardLayout({ children, userRole }) {
           flexDirection: { xs: 'column', lg: 'row' },
         }}
       >
-        <Nav openNav={openNav} onCloseNav={() => setOpenNav(false)} userRole={userRole} />
+        <Nav openNav={openNav} onCloseNav={onCloseNav} userRole={userRole} />
 
         <Main>{children}</Main>
       </Box>

@@ -11,7 +11,6 @@ import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
-import Label from 'src/components/label';
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
@@ -21,6 +20,7 @@ export default function UserTableRow({
   name,
   avatarUrl,
   company,
+  password,
   role,
   isVerified,
   status,
@@ -61,11 +61,9 @@ export default function UserTableRow({
 
         <TableCell>{company}</TableCell>
 
-        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
+        <TableCell >{password}</TableCell>
 
-        <TableCell>
-          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
-        </TableCell>
+        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
 
         <TableCell align="right" onClick={(e) => e.stopPropagation()}>
           <IconButton onClick={handleOpenMenu}>
@@ -102,6 +100,7 @@ UserTableRow.propTypes = {
   avatarUrl: PropTypes.any,
   company: PropTypes.any,
   handleClick: PropTypes.func,
+  password:PropTypes.any,
   isVerified: PropTypes.any,
   name: PropTypes.any,
   role: PropTypes.any,

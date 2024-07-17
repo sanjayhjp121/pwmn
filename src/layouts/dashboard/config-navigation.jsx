@@ -13,24 +13,24 @@ const adminRoutes = [
     icon: icon('ic_analytics'),
   },
   {
-    title: 'user',
-    path: '/admin-table',
+    title: 'Brands',
+    path: 'brand',
+    icon: icon('box'),
+  },
+  {
+    title: 'Subscriptions',
+    path: 'subscription',
+    icon: icon('ic_cart'),
+  },
+  {
+    title: 'Vault',
+    path: 'agency',
     icon: icon('ic_user'),
   },
   {
-    title: 'Password',
-    path: '/password',
+    title: 'Logs',
+    path: '/logs',
     icon: icon('ic_lock'),
-  },
-  {
-    title: 'Media',
-    path: '/media',
-    icon: icon('ic_medias'),
-  },
-  {
-    title: 'Logout',
-    path: '/login',
-    icon: icon('ic_logout'),
   },
 ];
 
@@ -72,11 +72,6 @@ const userRoutes = [
     title: 'Passwords',
     path: '/user',
     icon: icon('ic_lock')
-  },
-  {
-    title: 'Media Account',
-    path: '/user/media-account',
-    icon: icon('ic_medias')
   },
   {
     title: 'Logout',

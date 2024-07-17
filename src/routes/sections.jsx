@@ -9,6 +9,10 @@ import DashboardLayout from 'src/layouts/dashboard';
 import TotalAdmins from 'src/pages/superadmin/TotalAdmins';
 
 import RegisterView from 'src/sections/login/RegisterView';
+import MediaAccountForm from 'src/sections/admin-table/MediaAccountForm';
+import BrandPage from 'src/pages/admin/Brand';
+import Logs from 'src/pages/admin/Logs';
+import Subscriptionindex from 'src/sections/admin-table/Subscriptionindex';
 
 // import { AppView } from 'src/sections/overview/view';
 // import ClientDetails from 'src/sections/user/ClientDetails';
@@ -37,10 +41,15 @@ export default function Router() {
       ),
       children: [
         { element: <IndexPage />, index: true },
-        { path: 'admin-table', element: <UserPage /> },
+        { path: 'brand', element: <BrandPage/>},
+        { path: 'agency', element: <UserPage /> },
         { path: 'password', element: <Password/> },
         { path: 'clientinfo', element: <ClientDetails />},
-        { path: 'media', element: <Media/>}
+        { path: 'media', element: <Media/>},
+        { path: 'logs', element: <Logs/>},
+        { path: 'subscription', element: <Subscriptionindex/>},
+        { path: 'mediaform', element: <MediaAccountForm/>,
+        },
       ],
     },
     {
