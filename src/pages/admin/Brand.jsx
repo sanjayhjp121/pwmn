@@ -22,48 +22,44 @@ import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from 'src/sections/admin-table/table-no-data';
-import BrandTableRow from 'src/sections/admin-table/user-table-row';
+import BrandTableRow from 'src/sections/admin-table/brand-table-row';
 import BrandTableHead from 'src/sections/admin-table/user-table-head';
 import TableEmptyRows from 'src/sections/admin-table/table-empty-rows';
 import BrandTableToolbar from 'src/sections/admin-table/user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from 'src/sections/admin-table/utils';
 
-export default function BrandPage() {
-  const [brands, setBrands] = useState([]);
+export default function AgencyPage() {
+  const [agencies, setAgencies] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [verified, setVerified] = useState(false);
-  const [openClientDialog, setOpenClientDialog] = useState(false);
-  const [openMediaDialog, setOpenMediaDialog] = useState(false);
-  const [newBrandName, setNewBrandName] = useState('');
-  const [newBrandCompany, setNewBrandCompany] = useState('');
-  const [newBrandStatus, setNewBrandStatus] = useState('active');
   const [error, setError] = useState(null);
-  const [newEmail, setNewEmail] = useState('');
-  const [phone_number, setNumber] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const [openClientDialog, setOpenClientDialog] = useState(false);
+  const [newAgencyName, setNewAgencyName] = useState('');
+  const [newAgencyDescription, setNewAgencyDescription] = useState('');
+  const [newAgencyCompanyName, setNewAgencyCompanyName] = useState('');
+  const [newAgencyAddress, setNewAgencyAddress] = useState('');
   const navigate = useNavigate();
 
-  const fetchBrands = async () => {
+  const fetchAgencies = async () => {
     try {
-      const response = await axios.get('http://localhost:5002/brand/listAll', {
+      const response = await axios.get('http://localhost:5002/user/listAllAgency', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      setBrands(response.data.data);
+      setAgencies(response.data.data);
     } catch (err) {
-      console.error('Error fetching brands:', err);
-      setError('Error fetching brands.');
+      console.error('Error fetching agencies:', err);
+      setError('Error fetching agencies.');
     }
   };
 
   useEffect(() => {
-    fetchBrands();
+    fetchAgencies();
   }, [page]);
 
   const handleSort = (event, id) => {
@@ -76,14 +72,14 @@ export default function BrandPage() {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelecteds = brands.map((n) => n.full_name);
+      const newSelecteds = agencies.map((n) => n.name);
       setSelected(newSelecteds);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event, name) => {
+  const handleClick = (event, name, id) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
     if (selectedIndex === -1) {
@@ -99,6 +95,7 @@ export default function BrandPage() {
       );
     }
     setSelected(newSelected);
+    navigate(`/adduser/${id}`);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -121,52 +118,37 @@ export default function BrandPage() {
 
   const handleCloseClientDialog = () => {
     setOpenClientDialog(false);
-    setNewBrandName('');
-    setNewBrandCompany('');
-    setVerified(false);
-    setNewBrandStatus('active');
-    setNumber('');
-    setNewEmail('');
-    setNewPassword('');
+    setNewAgencyName('');
+    setNewAgencyDescription('');
+    setNewAgencyCompanyName('');
+    setNewAgencyAddress('');
   };
 
   const handleCreateClient = async () => {
-    const newClient = {
-      full_name: newBrandName,
-      email: newEmail,
-      phone_number,
-      company_name: newBrandCompany,
-      email_verified: verified,
-      status: newBrandStatus,
-      password: newPassword,
+    const newAgency = {
+      name: newAgencyName,
+      description: newAgencyDescription,
+      company_name: newAgencyCompanyName,
+      company_address: newAgencyAddress,
     };
 
-    console.log('Creating client with data:', newClient);
+    console.log('Creating agency with data:', newAgency);
 
     try {
-      const response = await axios.post('http://localhost:5002/brand/create', newClient, {
+      const response = await axios.post('http://localhost:5002/user/createAgency', newAgency, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       });
       console.log('Response from server:', response.data);
-
-      if (response.data.code) {
-        setBrands([...brands, response.data.data]);
-        handleCloseClientDialog();
-      }
     } catch (err) {
-      console.error('Error creating client:', err);
-      setError('Error creating client.');
+      console.error('Error creating agency:', err);
+      setError('Error creating agency.');
     }
   };
 
-  const handleNewMedia = () => {
-    navigate('/mediaform'); // Navigate to the Create Media page
-  };
-
   const dataFiltered = applyFilter({
-    inputData: brands,
+    inputData: agencies,
     comparator: getComparator(order, orderBy),
     filterName,
   });
@@ -176,13 +158,10 @@ export default function BrandPage() {
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Brands</Typography>
+        <Typography variant="h4">Agencies</Typography>
         <Stack direction="row" spacing={2}>
           <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleNewClient}>
-            New Client
-          </Button>
-          <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />} onClick={handleNewMedia}>
-            New Media
+            New Agency
           </Button>
         </Stack>
       </Stack>
@@ -200,15 +179,15 @@ export default function BrandPage() {
               <BrandTableHead
                 order={order}
                 orderBy={orderBy}
-                rowCount={brands.length}
+                rowCount={agencies.length}
                 numSelected={selected.length}
                 onRequestSort={handleSort}
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'full_name', label: 'Name' },
-                  { id: 'company_name', label: 'Company' },
-                  { id: 'email_verified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'name', label: 'Name' },
+                  { id: 'description', label: 'Description' },
+                  { id: 'company_name', label: 'Company Name', align: 'center' },
+                  { id: 'company_address', label: 'Address' },
                   { id: '' },
                 ]}
               />
@@ -217,19 +196,17 @@ export default function BrandPage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <BrandTableRow
-                      key={row.id}
-                      name={row.full_name}
-                      status={row.status}
+                      key={row._id}
+                      name={row.name}
+                      description={row.description}
                       company={row.company_name}
-                      avatarUrl={row.avatarUrl}
-                      isVerified={row.email_verified}
-                      number={row.number}
-                      selected={selected.indexOf(row.full_name) !== -1}
-                      onClick={(event) => handleClick(event, row.full_name)}
+                      address={row.company_address}
+                      selected={selected.indexOf(row.name) !== -1}
+                      onClick={(event) => handleClick(event, row.name, row._id)}
                     />
                   ))}
 
-                <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, brands.length)} />
+                <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, agencies.length)} />
 
                 {notFound && <TableNoData query={filterName} />}
               </TableBody>
@@ -240,7 +217,7 @@ export default function BrandPage() {
         <TablePagination
           page={page}
           component="div"
-          count={brands.length}
+          count={agencies.length}
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}
@@ -248,9 +225,9 @@ export default function BrandPage() {
         />
       </Card>
 
-      {/* Dialog for adding new client */}
+      {/* Dialog for adding new agency */}
       <Dialog open={openClientDialog} onClose={handleCloseClientDialog}>
-        <DialogTitle>Add New Client</DialogTitle>
+        <DialogTitle>Add New Agency</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
@@ -259,73 +236,41 @@ export default function BrandPage() {
             label="Name"
             type="text"
             fullWidth
-            value={newBrandName}
-            onChange={(e) => setNewBrandName(e.target.value)}
+            value={newAgencyName}
+            onChange={(e) => setNewAgencyName(e.target.value)}
           />
           <TextField
             margin="dense"
-            id="phone_number"
-            label="Phone Number"
-            type="number"
-            fullWidth
-            value={phone_number}
-            onChange={(e) => setNumber(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="email"
-            label="Email"
-            type="email"
-            fullWidth
-            value={newEmail}
-            onChange={(e) => setNewEmail(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="company"
-            label="Company"
+            id="description"
+            label="Description"
             type="text"
             fullWidth
-            value={newBrandCompany}
-            onChange={(e) => setNewBrandCompany(e.target.value)}
+            value={newAgencyDescription}
+            onChange={(e) => setNewAgencyDescription(e.target.value)}
           />
-          <div style={{ display: 'flex', alignItems: 'center' }}>
-            <Checkbox
-              checked={verified}
-              onChange={(e) => setVerified(e.target.checked)}
-              color="primary"
-            />
-            <Typography>Verified</Typography>
-          </div>
           <TextField
             margin="dense"
-            id="status"
-            label="Status"
+            id="company_name"
+            label="Company Name"
             type="text"
             fullWidth
-            value={newBrandStatus}
-            onChange={(e) => setNewBrandStatus(e.target.value)}
+            value={newAgencyCompanyName}
+            onChange={(e) => setNewAgencyCompanyName(e.target.value)}
           />
           <TextField
             margin="dense"
-            id="password"
-            label="Password"
-            type="password"
+            id="company_address"
+            label="Company Address"
+            type="text"
             fullWidth
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
+            value={newAgencyAddress}
+            onChange={(e) => setNewAgencyAddress(e.target.value)}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseClientDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={handleCreateClient} color="primary">
-            Save
-          </Button>
-          <Button onClick={handleCloseClientDialog} color="primary">
-            Exit
-          </Button>
+          <Button onClick={handleCloseClientDialog}>Cancel</Button>
+          <Button onClick={handleCreateClient}>Save</Button>
+          <Button onClick={handleCloseClientDialog}>Exit</Button>
         </DialogActions>
       </Dialog>
 

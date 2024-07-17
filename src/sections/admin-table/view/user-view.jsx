@@ -32,7 +32,7 @@ export default function UserPage() {
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('full_name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [verified, setVerified] = useState(false);
@@ -43,7 +43,8 @@ export default function UserPage() {
   const [error, setError] = useState(null);
   const [newEmail, setNewEmail] = useState('');
   const [phone_number, setNumber] = useState('');
-  const [newPassword, setNewPassword] = useState(''); // Added state for password
+  const [newPassword, setNewPassword] = useState('');
+  const [newAgency, setNewAgency] = useState(''); // Add state for agency
 
   const fetchUsers = async () => {
     try {
@@ -65,35 +66,33 @@ export default function UserPage() {
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
-    if (id !== '') {
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
-    }
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(id);
   };
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
       const newSelecteds = users.map((n) => n.full_name);
       setSelected(newSelecteds);
-      return;
+    } else {
+      setSelected([]);
     }
-    setSelected([]);
   };
 
   const handleClick = (event, name) => {
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
+      newSelected = [...selected, name];
     } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
+      newSelected = selected.slice(1);
     } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
+      newSelected = selected.slice(0, -1);
     } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
+      newSelected = [
+        ...selected.slice(0, selectedIndex),
+        ...selected.slice(selectedIndex + 1),
+      ];
     }
     setSelected(newSelected);
   };
@@ -103,13 +102,13 @@ export default function UserPage() {
   };
 
   const handleChangeRowsPerPage = (event) => {
-    setPage(0);
     setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
   };
 
   const handleFilterByName = (event) => {
-    setPage(0);
     setFilterName(event.target.value);
+    setPage(0);
   };
 
   const handleNewUser = () => {
@@ -124,7 +123,9 @@ export default function UserPage() {
     setNewUserStatus('active');
     setNumber('');
     setNewEmail('');
-    setNewPassword(''); // Reset password state
+    setNewPassword('');
+    setNewAgency(''); // Reset agency field
+    setError(null); // Clear error state on dialog close
   };
 
   const handleCreateUser = async () => {
@@ -135,10 +136,9 @@ export default function UserPage() {
       company_name: newUserCompany,
       email_verified: verified,
       status: newUserStatus,
-      password: newPassword, // Include password in the new user object
+      password: newPassword,
+      agency: newAgency, // Include agency in the new user data
     };
-
-    console.log('Creating user with data:', newUser); // Log the data to be sent
 
     try {
       const response = await axios.post('http://localhost:5002/user/createMember', newUser, {
@@ -146,11 +146,13 @@ export default function UserPage() {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      console.log('Response from server:', response.data); // Log server response
 
-      if (response.data.code) {
+      if (response.data.code === 200) {
         setUsers([...users, response.data.data]);
-        handleCloseDialog(); // Close the dialog after successful user creation
+        handleCloseDialog(); // Close dialog on successful creation
+      } else {
+        console.error('Error creating user:', response.data.message);
+        setError('Error creating user.');
       }
     } catch (err) {
       console.error('Error creating user:', err);
@@ -197,54 +199,45 @@ export default function UserPage() {
                   { id: 'company_name', label: 'Company' },
                   { id: 'email_verified', label: 'Verified', align: 'center' },
                   { id: 'status', label: 'Status' },
-                  { id: '' },
+                  { id: '', label: '' },
                 ]}
               />
+
               <TableBody>
-                {dataFiltered
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      name={row.full_name}
-                      status={row.status}
-                      company={row.company_name}
-                      avatarUrl={row.avatarUrl}
-                      isVerified={row.email_verified}
-                      number={row.number}
-                      selected={selected.indexOf(row.full_name) !== -1}
-                      onClick={(event) => handleClick(event, row.full_name)}
-                    />
-                  ))}
-
-                <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, users.length)} />
-
-                {notFound && <TableNoData query={filterName} />}
+                {dataFiltered.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+                  <UserTableRow
+                    key={row.id}
+                    row={row}
+                    selected={selected.indexOf(row.full_name) !== -1}
+                    onSelectRow={(event) => handleClick(event, row.full_name)}
+                  />
+                ))}
+                <TableEmptyRows height={53} emptyRows={emptyRows(page, rowsPerPage, users.length)} />
+                <TableNoData isNotFound={notFound} />
               </TableBody>
             </Table>
           </TableContainer>
         </Scrollbar>
 
         <TablePagination
-          page={page}
+          rowsPerPageOptions={[5, 10, 25]}
           component="div"
           count={users.length}
           rowsPerPage={rowsPerPage}
+          page={page}
           onPageChange={handleChangePage}
-          rowsPerPageOptions={[5, 10, 25]}
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
       </Card>
 
-      {/* Dialog for adding new user */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
-        <DialogTitle>Add New User</DialogTitle>
+        <DialogTitle>Create New User</DialogTitle>
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Name"
+            label="Full Name"
             type="text"
             fullWidth
             value={newUserName}
@@ -252,21 +245,21 @@ export default function UserPage() {
           />
           <TextField
             margin="dense"
-            id="phone_number"
-            label="Phone Number"
-            type="number"
-            fullWidth
-            value={phone_number}
-            onChange={(e) => setNumber(e.target.value)}
-          />
-          <TextField
-            margin="dense"
             id="email"
-            label="Email"
+            label="Email Address"
             type="email"
             fullWidth
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            id="number"
+            label="Phone Number"
+            type="text"
+            fullWidth
+            value={phone_number}
+            onChange={(e) => setNumber(e.target.value)}
           />
           <TextField
             margin="dense"
@@ -276,6 +269,15 @@ export default function UserPage() {
             fullWidth
             value={newUserCompany}
             onChange={(e) => setNewUserCompany(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            id="agency"
+            label="Agency"
+            type="text"
+            fullWidth
+            value={newAgency}
+            onChange={(e) => setNewAgency(e.target.value)}
           />
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Checkbox
@@ -316,6 +318,7 @@ export default function UserPage() {
           </Button>
         </DialogActions>
       </Dialog>
+
       {error && <Typography color="error">{error}</Typography>}
     </Container>
   );

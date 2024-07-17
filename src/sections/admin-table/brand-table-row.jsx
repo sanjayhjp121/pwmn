@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
@@ -13,16 +14,16 @@ import IconButton from '@mui/material/IconButton';
 
 import Iconify from 'src/components/iconify';
 
-export default function UserTableRow({
+export default function BrandTableRow({
   selected,
-  full_name,
-  company_name,
-  email_verified,
-  status,
-  handleClick,
-  avatarUrl, // Assuming this is provided elsewhere in your app
+  name,
+  description,
+  company,
+  address,
+  _id, // Added _id prop to receive the agency ID
 }) {
   const [open, setOpen] = useState(null);
+  const navigate = useNavigate(); // Hook for navigation
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -30,6 +31,11 @@ export default function UserTableRow({
 
   const handleCloseMenu = () => {
     setOpen(null);
+  };
+
+  const handleRowClick = () => {
+    // Navigate to '/adduser' with agency ID
+    navigate(`/agency`);
   };
 
   return (
@@ -40,7 +46,7 @@ export default function UserTableRow({
         role="checkbox"
         selected={selected}
         style={{ cursor: 'pointer' }}
-        onClick={handleClick} // Handle click on the whole row
+        onClick={handleRowClick} // Handle click on the whole row
       >
         <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
           <Checkbox disableRipple checked={selected} onChange={() => {}} />
@@ -48,18 +54,22 @@ export default function UserTableRow({
 
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={full_name} src={avatarUrl} />
-            <Typography variant="subtitle2" noWrap>
-              {full_name}
-            </Typography>
+            <Avatar alt={name} />
+            <Typography variant="subtitle2">{name}</Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{company_name}</TableCell>
+        <TableCell>
+          <Typography variant="body2">{description}</Typography>
+        </TableCell>
 
-        <TableCell align="center">{email_verified ? 'Yes' : 'No'}</TableCell>
+        <TableCell>
+          <Typography variant="body2">{company}</Typography>
+        </TableCell>
 
-        <TableCell>{status}</TableCell>
+        <TableCell>
+          <Typography variant="body2">{address}</Typography>
+        </TableCell>
 
         <TableCell align="right" onClick={(e) => e.stopPropagation()}>
           <IconButton onClick={handleOpenMenu}>
@@ -68,6 +78,7 @@ export default function UserTableRow({
         </TableCell>
       </TableRow>
 
+      {/* Menu popover component remains the same */}
       <Popover
         open={!!open}
         anchorEl={open}
@@ -82,7 +93,6 @@ export default function UserTableRow({
           <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
           Edit
         </MenuItem>
-
         <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
           <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
           Delete
@@ -92,12 +102,11 @@ export default function UserTableRow({
   );
 }
 
-UserTableRow.propTypes = {
-  avatarUrl: PropTypes.string, // Assuming avatarUrl is a string (URL to avatar image)
-  company_name: PropTypes.string.isRequired,
-  full_name: PropTypes.string.isRequired,
-  handleClick: PropTypes.func.isRequired,
-  email_verified: PropTypes.bool.isRequired,
-  status: PropTypes.string.isRequired,
+BrandTableRow.propTypes = {
+  name: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  company: PropTypes.string.isRequired,
+  address: PropTypes.string.isRequired,
   selected: PropTypes.bool.isRequired,
+  _id: PropTypes.string.isRequired, // Define _id prop type
 };

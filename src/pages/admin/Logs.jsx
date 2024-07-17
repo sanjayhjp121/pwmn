@@ -1,18 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Box, Typography, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar, TablePagination, Toolbar, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-
-const auditLogs = [
-  { id: 1, email: 'konjat@gmail.com', action: 'revealed OTP code for account: Facebook (Sample)', timestamp: '1 minute ago', ip: '2001:8f8:1c39:7229:2cd2:524b:34ea:48d3' },
-  { id: 2, email: 'konjat@gmail.com', action: 'revealed OTP code for account: Apple (Sample)', timestamp: '1 minute ago', ip: '2001:8f8:1c39:7229:2cd2:524b:34ea:48d3' },
-  { id: 3, email: 'konjat@gmail.com', action: 'logged in', timestamp: '2 minutes ago', ip: '2001:8f8:1c39:7229:2cd2:524b:34ea:48d3' },
-  { id: 4, email: 'konjat@gmail.com', action: 'signed up for Daito with organization Konjat', timestamp: '2 minutes ago', ip: '2001:8f8:1c39:7229:2cd2:524b:34ea:48d3' },
-];
+import axios from 'axios';
 
 const Logs = () => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(25);
-  const [searchQuery, setSearchQuery] = React.useState('');
+  const [auditLogs, setAuditLogs] = useState([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(25);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    fetchLogs();
+  }, []);
+
+  const fetchLogs = async () => {
+    try {
+      const response = await axios.get('/api/logs'); // Replace with your backend API endpoint
+      setAuditLogs(response.data.logs); // Assuming your backend returns logs in a 'logs' property
+    } catch (error) {
+      console.error('Error fetching logs:', error);
+    }
+  };
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -27,7 +35,7 @@ const Logs = () => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredLogs = auditLogs.filter(log => 
+  const filteredLogs = auditLogs.filter(log =>
     log.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     log.action.toLowerCase().includes(searchQuery.toLowerCase()) ||
     log.timestamp.toLowerCase().includes(searchQuery.toLowerCase()) ||
