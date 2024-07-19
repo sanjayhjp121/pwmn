@@ -11,6 +11,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
 import { account } from 'src/_mock/account';
+import { Link } from 'react-router-dom';
 // import Link from 'next/link';
 
 // ----------------------------------------------------------------------
@@ -48,6 +49,17 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(null);
     // router.push('/profile');
+  };
+
+   const handlelogout = () => {
+    // Remove the token from localStorage
+    localStorage.removeItem('token');
+    
+    // Perform any additional logout logic here, such as redirecting to the login page
+    // router.push('/login');
+    console.log('Logout successful');
+
+    handleClose();
   };
 
 
@@ -115,10 +127,9 @@ export default function AccountPopover() {
         <MenuItem
           disableRipple
           disableTouchRipple
-          // onClick={handlelogout}
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
         >
-          Logout
+          <Link to="/login" onClick={handlelogout}>Logout</Link>
         </MenuItem>
       </Popover>
     </>
