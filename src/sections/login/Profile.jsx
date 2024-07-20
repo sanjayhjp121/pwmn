@@ -85,8 +85,8 @@ export default function ProfilePage() {
 
   const handleImageChange = async (file) => {
     const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('profileImage', file);
+    const formDatas = new FormData();
+    formDatas.append('profileImage', file);
 
     try {
       const response = await axios.post('http://localhost:5002/user/uploadProfileImage', formData, {
