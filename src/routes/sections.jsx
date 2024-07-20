@@ -18,6 +18,7 @@ import AdminProfilePage from 'src/sections/login/Profile';
 import UserProfilePage from 'src/pages/user/UserProfile';
 import VaultForm from 'src/pages/admin/Vault';
 import VaultTable from 'src/pages/admin/Vault';
+import ForgotPassword from 'src/sections/login/ForgotPassword';
 
 // import { AppView } from 'src/sections/overview/view';
 // import ClientDetails from 'src/sections/user/ClientDetails';
@@ -100,6 +101,10 @@ export default function Router() {
       path: '404',
       element: <Page404 />,
     },
+    {
+      path: 'forgotpassword',
+      element: <ForgotPassword/>
+    }
     // {
     //   path: '*',
     //   element: <Navigate to="/404" replace />,

@@ -1,20 +1,20 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
-import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
-import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
+import {
+  Box,
+  Link,
+  Card,
+  Stack,
+  Button,
+  Divider,
+  TextField,
+  Typography,
+  IconButton,
+  InputAdornment,
+} from '@mui/material';
 import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
-import InputAdornment from '@mui/material/InputAdornment';
-
 import { useRouter } from 'src/routes/hooks';
 
 import { bgGradient } from 'src/theme/css';
@@ -45,12 +45,12 @@ export default function LoginView() {
       if (response.data.code === 200) {
         localStorage.setItem('token', response.data.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
-        if(userType === 'member'){
-        router.push('/user');}
-        else if(userType === 'admin'){
-        router.push('/superadmin')}
-        else{
-          router.push('/')
+        if (userType === 'member') {
+          router.push('/user');
+        } else if (userType === 'admin') {
+          router.push('/superadmin');
+        } else {
+          router.push('/profile');
         }
       } else {
         setError('Login failed. Please check your credentials.');
@@ -97,7 +97,12 @@ export default function LoginView() {
       )}
 
       <Stack direction="row" alignItems="center" justifyContent="flex-end" sx={{ my: 3 }}>
-        <Link variant="subtitle2" underline="hover">
+        <Link
+          variant="subtitle2"
+          component={RouterLink}
+          underline="hover"
+          to={`/forgotpassword`}
+        >
           Forgot password?
         </Link>
       </Stack>
