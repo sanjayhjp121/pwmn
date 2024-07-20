@@ -14,12 +14,14 @@ import { bgGradient } from 'src/theme/css';
 import axios from 'axios';
 import Logo from 'src/components/logo';
 
-export default function ForgotPassword(userType) {
+export default function ForgotPassword() {
     const theme = useTheme();
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(null);
     const [error, setError] = useState(null);
+
+    const userType = localStorage.getItem('userType');
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -101,7 +103,7 @@ export default function ForgotPassword(userType) {
 
                     <Divider sx={{ my: 3 }} />
 
-                    <MuiLink component={RouterLink} to="/login" variant="subtitle2" sx={{ ml: 0.5 }}>
+                    <MuiLink component={RouterLink} to="/" variant="subtitle2" sx={{ ml: 0.5 }}>
                         Back to login
                     </MuiLink>
                 </Card>

@@ -45,6 +45,7 @@ export default function LoginView() {
       if (response.data.code === 200) {
         localStorage.setItem('token', response.data.data.token);
         localStorage.setItem('user', JSON.stringify(response.data.data.user));
+        localStorage.setItem('userType', userType);
         if (userType === 'member') {
           router.push('/user');
         } else if (userType === 'admin') {
@@ -101,7 +102,7 @@ export default function LoginView() {
           variant="subtitle2"
           component={RouterLink}
           underline="hover"
-          to={`/forgotpassword`}
+          onClick={() => router.push('/forgot')}
         >
           Forgot password?
         </Link>

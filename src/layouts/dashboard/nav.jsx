@@ -32,6 +32,13 @@ import navConfig from './config-navigation';
 export default function Nav({ openNav, onCloseNav, userRole }) {
   const pathname = usePathname();
   const upLg = useResponsive('up', 'lg');
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Fetch user data from local storage
+    const userData = JSON.parse(localStorage.getItem('user'));
+    setUser(userData);
+  }, []);
 
   useEffect(() => {
     if (openNav) {
@@ -54,9 +61,9 @@ export default function Nav({ openNav, onCloseNav, userRole }) {
     >
       <Avatar src={account.photoURL} alt="photoURL" />
       <Box sx={{ ml: 2 }}>
-        <Typography variant="subtitle2">{account.displayName}</Typography>
+        <Typography variant="subtitle2">{user?.full_name}</Typography>
         <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-          {account.role}
+          {user?.role}
         </Typography>
       </Box>
     </Box>

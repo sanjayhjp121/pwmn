@@ -1,6 +1,4 @@
-import { useState } from 'react';
-// import { useRouter } from 'next/router';
-
+import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Divider from '@mui/material/Divider';
@@ -10,39 +8,39 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
-import { account } from 'src/_mock/account';
 import { Link } from 'react-router-dom';
-// import Link from 'next/link';
-
-// ----------------------------------------------------------------------
-
-// ----------------------------------------------------------------------
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
-  // const router = useRouter();
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    // Fetch user data from local storage
+    const userData = JSON.parse(localStorage.getItem('user'));
+    setUser(userData);
+  }, []);
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
-  // const router = useRouter();
   const handleClose = () => {
     setOpen(null);
-    // router.push('/profile');
   };
 
-   const handlelogout = () => {
-    // Remove the token from localStorage
+  const handleLogout = () => {
+    // Clear token and user data from local storage
     localStorage.removeItem('token');
-    
-    // Perform any additional logout logic here, such as redirecting to the login page
-    // router.push('/login');
+    localStorage.removeItem('user');
     console.log('Logout successful');
-
     handleClose();
+    // Redirect to login page if using a router
+    // router.push('/login');
   };
 
+  if (!user) {
+    return null; // Handle case where user data is still loading or not available
+  }
 
   return (
     <>
@@ -59,15 +57,15 @@ export default function AccountPopover() {
         }}
       >
         <Avatar
-          src={account.photoURL}
-          alt={account.displayName}
+          src={user.photoURL} // Assuming 'photoURL' is the key in user data for avatar
+          alt={user.full_name} // Assuming 'full_name' is the key in user data for full name
           sx={{
             width: 36,
             height: 36,
             border: (theme) => `solid 2px ${theme.palette.background.default}`,
           }}
         >
-          {account.displayName.charAt(0).toUpperCase()}
+          {user.full_name.charAt(0).toUpperCase()}
         </Avatar>
       </IconButton>
 
@@ -88,26 +86,24 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user.full_name}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user.email}
           </Typography>
         </Box>
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
-
         <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
-        <MenuItem
-          disableRipple
-          disableTouchRipple
-          sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
-          onClick={handlelogout}
-        >
-        Logout
-        </MenuItem>
+          <MenuItem
+            disableRipple
+            disableTouchRipple
+            sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+            onClick={handleLogout}
+          >
+            Logout
+          </MenuItem>
         </Link>
       </Popover>
     </>

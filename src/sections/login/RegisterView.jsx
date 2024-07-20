@@ -157,7 +157,7 @@ export default function RegisterView() {
 
           <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
             Already have an account?
-            <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={() => router.push('/login')}>
+            <Link variant="subtitle2" sx={{ ml: 0.5 }} onClick={() => router.push('/')}>
               Sign in
             </Link>
           </Typography>

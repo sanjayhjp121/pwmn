@@ -20,10 +20,10 @@ export default function BrandTableRow({
   description,
   company,
   address,
-  _id, // Added _id prop to receive the agency ID
+  _id, // Ensure _id is defined
 }) {
   const [open, setOpen] = useState(null);
-  const navigate = useNavigate(); // Hook for navigation
+  const navigate = useNavigate();
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -34,8 +34,7 @@ export default function BrandTableRow({
   };
 
   const handleRowClick = () => {
-    // Navigate to '/adduser' with agency ID
-    navigate(`/agency`);
+    navigate(`/agency?agencyid=${_id}`); // Use _id for navigation
   };
 
   return (
@@ -46,7 +45,7 @@ export default function BrandTableRow({
         role="checkbox"
         selected={selected}
         style={{ cursor: 'pointer' }}
-        onClick={handleRowClick} // Handle click on the whole row
+        onClick={handleRowClick}
       >
         <TableCell padding="checkbox" onClick={(e) => e.stopPropagation()}>
           <Checkbox disableRipple checked={selected} onChange={() => {}} />
@@ -78,7 +77,6 @@ export default function BrandTableRow({
         </TableCell>
       </TableRow>
 
-      {/* Menu popover component remains the same */}
       <Popover
         open={!!open}
         anchorEl={open}
@@ -108,5 +106,5 @@ BrandTableRow.propTypes = {
   company: PropTypes.string.isRequired,
   address: PropTypes.string.isRequired,
   selected: PropTypes.bool.isRequired,
-  _id: PropTypes.string.isRequired, // Define _id prop type
+  _id: PropTypes.string.isRequired, // Ensure _id is required and properly typed
 };

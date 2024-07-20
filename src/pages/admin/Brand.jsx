@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
@@ -48,12 +48,14 @@ export default function AgencyPage() {
   const navigate = useNavigate();
 
   const fetchAgencies = async () => {
+    // const { agencyId } = useParams()
     try {
       const response = await axios.get('http://localhost:5002/user/listAllAgency', {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       });
+      console.log('API Response:', response.data.data); 
       setAgencies(response.data.data);
     } catch (err) {
       console.error('Error fetching agencies:', err);
@@ -81,6 +83,7 @@ export default function AgencyPage() {
   };
 
   const handleClick = (event, name, id) => {
+    console.log('Clicked - Name:', name, 'ID:', id);
     const selectedIndex = selected.indexOf(name);
     let newSelected = [];
     if (selectedIndex === -1) {
@@ -98,6 +101,7 @@ export default function AgencyPage() {
     setSelected(newSelected);
     navigate(`/adduser/${id}`);
   };
+  
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -166,7 +170,7 @@ export default function AgencyPage() {
     agency.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     agency.company_address.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
+  console.log('Filtered Agencies:', filteredAgencies);
   const notFound = !filteredAgencies.length && !!searchQuery;
 
   return (
@@ -222,14 +226,15 @@ export default function AgencyPage() {
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <BrandTableRow
-                      key={row._id}
-                      name={row.name}
-                      description={row.description}
-                      company={row.company_name}
-                      address={row.company_address}
-                      selected={selected.indexOf(row.name) !== -1}
-                      onClick={(event) => handleClick(event, row.name, row._id)}
-                    />
+                    key={row._id}
+                    name={row.name}
+                    description={row.description}
+                    company={row.company_name}
+                    address={row.company_address}
+                    selected={selected.indexOf(row.name) !== -1}
+                    _id={row._id} // Ensure _id is passed as a prop
+                    onClick={(event) => handleClick(event, row.name, row._id)}
+                  />                  
                   ))}
 
                 <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, agencies.length)} />

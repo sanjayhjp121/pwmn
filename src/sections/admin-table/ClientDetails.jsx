@@ -17,11 +17,11 @@ const ClientDetails = () => {
     const fetchClientDetails = async () => {
       try {
         // Replace with your actual API endpoint
-        const clientResponse = await axios.get('http://localhost:5002/client/12345');
+        const clientResponse = await axios.get('http://localhost:5002/user/createPassword');
         setClient(clientResponse.data);
 
         // Fetch media accounts related to the client
-        const mediaResponse = await axios.get(`http://localhost:5002/client/${clientResponse.data.id}/media`);
+        const mediaResponse = await axios.get(`http://localhost:5002/user/createPassword`);
         setMediaAccounts(mediaResponse.data);
       } catch (err) {
         console.error('Error fetching client details or media accounts:', err);

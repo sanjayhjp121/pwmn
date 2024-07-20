@@ -102,7 +102,7 @@ export default function Router() {
       element: <Page404 />,
     },
     {
-      path: 'forgotpassword',
+      path: 'forgot',
       element: <ForgotPassword/>
     }
     // {

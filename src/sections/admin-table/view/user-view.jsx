@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Card,
   Stack,
@@ -51,12 +51,22 @@ export default function UserPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [mediaName, setMediaName] = useState(''); // Placeholder state for media
-
   const navigate = useNavigate();
 
+  const urlObject = new URL(window.location.href);
+
+// Get the value of the query parameter 'agencyid'
+// const agencyId = urlObject.searchParams.get('agencyid');
+
+
+const [agencyId, setagencyId] = useState(urlObject.searchParams.get('agencyid'));
+console.log(agencyId);
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://localhost:5002/user/listAllMember', {
+        params: {
+          agencyid: agencyId // Send agencyId as a query parameter
+        },
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -136,18 +146,18 @@ export default function UserPage() {
   };
 
   const handleCreateUser = async () => {
+    alert()
     const newUser = {
       full_name: newUserName,
       email: newEmail,
       phone_number: phoneNumber,
-      company_name: newUserCompany,
       email_verified: verified,
       status: newUserStatus,
-      password: newPassword,
-      agency: newAgency,
+      agencyId: agencyId,
     };
 
     try {
+      alert('inside try')
       const response = await axios.post('http://localhost:5002/user/createMember', newUser, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -161,6 +171,7 @@ export default function UserPage() {
         setError('Error creating user.');
       }
     } catch (err) {
+      alert('inside catch')
       setError('Error creating user.');
     }
   };
@@ -306,7 +317,7 @@ export default function UserPage() {
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
-          <TextField
+          {/* <TextField
             margin="dense"
             id="company"
             label="Company"
@@ -323,7 +334,7 @@ export default function UserPage() {
             fullWidth
             value={newAgency}
             onChange={(e) => setNewAgency(e.target.value)}
-          />
+          /> */}
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Checkbox
               checked={verified}
@@ -341,7 +352,7 @@ export default function UserPage() {
             value={newUserStatus}
             onChange={(e) => setNewUserStatus(e.target.value)}
           />
-          <TextField
+          {/* <TextField
             margin="dense"
             id="password"
             label="Password"
@@ -349,7 +360,7 @@ export default function UserPage() {
             fullWidth
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-          />
+          /> */}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
@@ -357,6 +368,9 @@ export default function UserPage() {
           </Button>
           <Button onClick={handleCreateUser} color="primary">
             Save
+          </Button>
+          <Button onClick={handleCloseDialog} color="primary">
+            Exit
           </Button>
         </DialogActions>
       </Dialog>
@@ -383,6 +397,9 @@ export default function UserPage() {
           </Button>
           <Button onClick={handleCreateMedia} color="primary">
             Save
+          </Button>
+          <Button onClick={handleCloseMediaDialog} color="primary">
+            Exit
           </Button>
         </DialogActions>
       </Dialog>
