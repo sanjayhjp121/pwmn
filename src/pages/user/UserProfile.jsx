@@ -47,7 +47,7 @@ export default function UserProfilePage() {
           return;
         }
 
-        const response = await axios.get(`http://localhost:5002/member/getProfile`, {
+        const response = await axios.get('http://localhost:5002/member/getProfile', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userData = response.data.data;

@@ -12,17 +12,29 @@ const ClientDetails = () => {
   const [error, setError] = useState(null);
   
   const navigate = useNavigate();
+  const urlObject = new URL(window.location.href);
+  const agencyId = urlObject.searchParams.get('agencyid');
 
   useEffect(() => {
     const fetchClientDetails = async () => {
       try {
-        // Replace with your actual API endpoint
-        const clientResponse = await axios.get('http://localhost:5002/user/createPassword');
-        setClient(clientResponse.data);
+        // Fetch client details (replace with your actual client details endpoint if needed)
+        const clientResponse = await axios.get('http://localhost:5002/user/listAllPasswordByAgency', {
+          params: { agencyid: agencyId },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setClient(clientResponse.data.data); // Adjust this based on actual response structure
 
         // Fetch media accounts related to the client
-        const mediaResponse = await axios.get(`http://localhost:5002/user/createPassword`);
-        setMediaAccounts(mediaResponse.data);
+        const mediaResponse = await axios.get('http://localhost:5002/user/listAllPasswordByAgency', {
+          params: { agencyid: agencyId },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
+        setMediaAccounts(mediaResponse.data.data); // Adjust this based on actual response structure
       } catch (err) {
         console.error('Error fetching client details or media accounts:', err);
         setError('Error fetching data.');
@@ -32,7 +44,7 @@ const ClientDetails = () => {
     };
 
     fetchClientDetails();
-  }, []);
+  }, [agencyId]);
 
   const handleCreateMediaAccount = () => {
     navigate('/mediaform');
@@ -53,32 +65,7 @@ const ClientDetails = () => {
           Client Details: {client ? client.name : 'Loading...'}
         </Typography>
         <Divider sx={{ mb: 2 }} />
-        <Box sx={{ mt: 2, pl: 2 }}>
-          {client ? (
-            <>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                <strong>ID:</strong> {client.id}
-              </Typography>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                <strong>Name:</strong> {client.name}
-              </Typography>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                <strong>Date of Birth:</strong> {client.dob}
-              </Typography>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                <strong>Email:</strong> {client.email}
-              </Typography>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                <strong>Password Manager:</strong> {client.passwordManager}
-              </Typography>
-              <Typography variant="subtitle1" sx={{ mb: 1 }}>
-                <strong>Description:</strong> {client.description || '—'}
-              </Typography>
-            </>
-          ) : (
-            <Typography variant="subtitle1">Loading client details...</Typography>
-          )}
-        </Box>
+        
       </Paper>
 
       <Paper elevation={3} sx={{ p: 3, mb: 3, borderRadius: 2 }}>

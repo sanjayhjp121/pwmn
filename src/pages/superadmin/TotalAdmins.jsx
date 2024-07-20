@@ -159,9 +159,6 @@ export default function TotalAdmins() {
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Admins</Typography>
-        <Button variant="contained" onClick={() => setOpenDialog(true)}>
-          Add Admin
-        </Button>
       </Stack>
 
       <Card>

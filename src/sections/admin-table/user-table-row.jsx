@@ -5,20 +5,17 @@ import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
 import { TableRow, TableCell, Checkbox, IconButton } from '@mui/material';
-// import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
-// import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
-// import IconButton from '@mui/material/IconButton';
 
 import Iconify from 'src/components/iconify';
 
 export default function UserTableRow({
   selected,
   full_name,
-  company_name,
+  email,
   email_verified,
-  status,
+  phone_number,
   handleClick,
   avatarUrl, // Assuming this is provided elsewhere in your app
 }) {
@@ -55,11 +52,11 @@ export default function UserTableRow({
           </Stack>
         </TableCell>
 
-        <TableCell>{company_name}</TableCell>
+        <TableCell>{email}</TableCell>
 
         <TableCell align="center">{email_verified ? 'Yes' : 'No'}</TableCell>
 
-        <TableCell>{status}</TableCell>
+        <TableCell>{phone_number}</TableCell>
 
         <TableCell align="right" onClick={(e) => e.stopPropagation()}>
           <IconButton onClick={handleOpenMenu}>
@@ -94,10 +91,10 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
   avatarUrl: PropTypes.string, // Assuming avatarUrl is a string (URL to avatar image)
-  company_name: PropTypes.string.isRequired,
+  email: PropTypes.string.isRequired,
   full_name: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
   email_verified: PropTypes.bool.isRequired,
-  status: PropTypes.string.isRequired,
+  phone_number: PropTypes.string.isRequired,
   selected: PropTypes.bool,
 };

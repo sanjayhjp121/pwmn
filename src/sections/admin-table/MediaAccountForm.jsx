@@ -1,14 +1,17 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import { Box, Button, TextField, Typography, Autocomplete, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
 
-import { Box, Button, TextField, Typography, Autocomplete} from '@mui/material';
-
-
-const clients = [
-  { id: 1, name: 'Client 1' },
-  { id: 2, name: 'Client 2' },
-  { id: 3, name: 'Client 3' },
-  // Add more clients as needed
+const platforms = [
+  { name: 'Facebook', logo: 'https://via.placeholder.com/24?text=FB' },
+  { name: 'Twitter', logo: 'https://via.placeholder.com/24?text=TW' },
+  { name: 'Instagram', logo: 'https://via.placeholder.com/24?text=IG' },
+  { name: 'LinkedIn', logo: 'https://via.placeholder.com/24?text=LI' },
+  { name: 'Snapchat', logo: 'https://via.placeholder.com/24?text=SC' },
+  { name: 'Airbnb', logo: 'https://via.placeholder.com/24?text=AB' },
+  { name: 'Booking.com', logo: 'https://via.placeholder.com/24?text=BC' },
+  { name: 'Expedia', logo: 'https://via.placeholder.com/24?text=EX' },
+  // Add more platforms and their logos as needed
 ];
 
 const MediaAccountForm = () => {
@@ -20,7 +23,6 @@ const MediaAccountForm = () => {
     password: '',
     notes: '',
     image: '',
-    clients: [],
     FA_phone: '',
     FA_App: '',
     Recovery_Email: '',
@@ -31,8 +33,8 @@ const MediaAccountForm = () => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
   };
 
-  const handleClientsChange = (event, newValue) => {
-    setFormValues({ ...formValues, clients: newValue });
+  const handlePlatformChange = (event) => {
+    setFormValues({ ...formValues, platform: event.target.value });
   };
 
   const handleSubmit = (e) => {
@@ -57,31 +59,34 @@ const MediaAccountForm = () => {
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mb: 3 }}>
       <Typography variant="h6" sx={{ mb: 2 }}>Create Media Account</Typography>
-      <Autocomplete
-        multiple
-        options={clients}
-        getOptionLabel={(option) => option.name}
-        value={formValues.clients}
-        onChange={handleClientsChange}
-        renderInput={(params) => (
-          <TextField
-            {...params}
-            variant="outlined"
-            label="Clients"
-            placeholder="Select clients"
-            fullWidth
-            sx={{ mb: 2 }}
-          />
-        )}
-      />
-      <TextField
-        label="Platform Name"
-        name="platform"
-        value={formValues.platform}
-        onChange={handleChange}
-        fullWidth
-        sx={{ mb: 2 }}
-      />
+
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel>Platform</InputLabel>
+        <Select
+          value={formValues.platform}
+          onChange={handlePlatformChange}
+          label="Platform"
+          renderValue={(selected) => {
+            const platform = platforms.find((p) => p.name === selected);
+            return (
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <img src={platform?.logo} alt={platform?.name} style={{ width: 24, height: 24, marginRight: 8 }} />
+                {selected}
+              </Box>
+            );
+          }}
+        >
+          {platforms.map((platform) => (
+            <MenuItem key={platform.name} value={platform.name}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <img src={platform.logo} alt={platform.name} style={{ width: 24, height: 24, marginRight: 8 }} />
+                {platform.name}
+              </Box>
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
       <TextField
         label="URL"
         name="url"

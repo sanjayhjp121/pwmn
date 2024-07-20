@@ -1,6 +1,5 @@
-import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
   Card,
   Stack,
@@ -19,16 +18,25 @@ import {
   TablePagination,
   TableRow,
   TableCell,
+  IconButton
 } from '@mui/material';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-
 import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
+import axios from 'axios';
+
+const generateRandomPassword = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let password = '';
+  for (let i = 0; i < 8; i++) {
+    password += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return password;
+};
 
 export default function UserPage() {
   const [users, setUsers] = useState([]);
@@ -41,26 +49,20 @@ export default function UserPage() {
   const [verified, setVerified] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [newUserName, setNewUserName] = useState('');
-  const [newUserCompany, setNewUserCompany] = useState('');
-  const [newUserStatus, setNewUserStatus] = useState('active');
-  const [error, setError] = useState(null);
   const [newEmail, setNewEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [newAgency, setNewAgency] = useState('');
+  const [newUserStatus, setNewUserStatus] = useState('active');
+  const [error, setError] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [mediaName, setMediaName] = useState(''); // Placeholder state for media
+  const [password, setPassword] = useState('');
+  const [loadingPassword, setLoadingPassword] = useState(false);
   const navigate = useNavigate();
 
   const urlObject = new URL(window.location.href);
+  const [agencyId, setAgencyId] = useState(urlObject.searchParams.get('agencyid'));
 
-// Get the value of the query parameter 'agencyid'
-// const agencyId = urlObject.searchParams.get('agencyid');
-
-
-const [agencyId, setagencyId] = useState(urlObject.searchParams.get('agencyid'));
-console.log(agencyId);
   const fetchUsers = async () => {
     try {
       const response = await axios.get('http://localhost:5002/user/listAllMember', {
@@ -130,34 +132,32 @@ console.log(agencyId);
 
   const handleNewUser = () => {
     setOpenDialog(true);
+    setPassword(generateRandomPassword()); // Generate a password when the dialog opens
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setNewUserName('');
-    setNewUserCompany('');
+    setNewEmail('');
+    setPhoneNumber('');
     setVerified(false);
     setNewUserStatus('active');
-    setPhoneNumber('');
-    setNewEmail('');
-    setNewPassword('');
-    setNewAgency('');
     setError(null);
+    setPassword(''); // Reset password on dialog close
   };
 
   const handleCreateUser = async () => {
-    alert()
     const newUser = {
       full_name: newUserName,
       email: newEmail,
       phone_number: phoneNumber,
       email_verified: verified,
       status: newUserStatus,
+      password, // Include the generated password
       agencyId: agencyId,
     };
 
     try {
-      alert('inside try')
       const response = await axios.post('http://localhost:5002/user/createMember', newUser, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -171,7 +171,6 @@ console.log(agencyId);
         setError('Error creating user.');
       }
     } catch (err) {
-      alert('inside catch')
       setError('Error creating user.');
     }
   };
@@ -198,12 +197,9 @@ console.log(agencyId);
 
   const filteredUsers = dataFiltered.filter(user =>
     (user.full_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (user.company_name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (user.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
     (user.phone_number || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
-
-  const notFound = !filteredUsers.length && !!searchQuery;
 
   return (
     <Container>
@@ -241,9 +237,9 @@ console.log(agencyId);
                 orderBy={orderBy}
                 headLabel={[
                   { id: 'full_name', label: 'Full Name' },
-                  { id: 'company_name', label: 'Company' },
+                  { id: 'email', label: 'Email' },
                   { id: 'email_verified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'phone_number', label: 'Phone Number' },
                   { id: '' },
                 ]}
                 rowCount={users.length}
@@ -256,9 +252,13 @@ console.log(agencyId);
                   filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
                     <UserTableRow
                       key={row.full_name}
-                      row={row}
+                      full_name={row.full_name}
+                      email={row.email}
+                      phone_number={row.phone_number}
+                      email_verified={row.email_verified}
+                      status={row.status}
                       selected={selected.indexOf(row.full_name) !== -1}
-                      onSelectRow={(event) => handleClick(event, row.full_name)}
+                      handleClick={(event) => handleClick(event, row.full_name)}
                     />
                   ))
                 ) : (
@@ -269,7 +269,6 @@ console.log(agencyId);
                   </TableRow>
                 )}
                 <TableEmptyRows height={53} emptyRows={emptyRows(page, rowsPerPage, users.length)} />
-                <TableNoData isNotFound={notFound} />
               </TableBody>
             </Table>
           </TableContainer>
@@ -317,24 +316,6 @@ console.log(agencyId);
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
-          {/* <TextField
-            margin="dense"
-            id="company"
-            label="Company"
-            type="text"
-            fullWidth
-            value={newUserCompany}
-            onChange={(e) => setNewUserCompany(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="agency"
-            label="Agency"
-            type="text"
-            fullWidth
-            value={newAgency}
-            onChange={(e) => setNewAgency(e.target.value)}
-          /> */}
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Checkbox
               checked={verified}
@@ -352,15 +333,23 @@ console.log(agencyId);
             value={newUserStatus}
             onChange={(e) => setNewUserStatus(e.target.value)}
           />
-          {/* <TextField
+          <TextField
             margin="dense"
             id="password"
             label="Password"
-            type="password"
+            type="text"
             fullWidth
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          /> */}
+            value={password}
+            InputProps={{
+              readOnly: true,
+              endAdornment: (
+                <IconButton onClick={() => setPassword(generateRandomPassword())} disabled={loadingPassword}>
+                  <Iconify icon="eva:refresh-fill" />
+                </IconButton>
+              ),
+            }}
+            helperText={loadingPassword ? 'Generating...' : 'Click refresh to generate a new password'}
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
@@ -369,16 +358,12 @@ console.log(agencyId);
           <Button onClick={handleCreateUser} color="primary">
             Save
           </Button>
-          <Button onClick={handleCloseDialog} color="primary">
-            Exit
-          </Button>
         </DialogActions>
       </Dialog>
 
       <Dialog open={openMediaDialog} onClose={handleCloseMediaDialog}>
         <DialogTitle>Create New Media</DialogTitle>
         <DialogContent>
-          {/* Add fields for media creation here */}
           <TextField
             autoFocus
             margin="dense"
