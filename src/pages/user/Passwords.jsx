@@ -25,6 +25,7 @@ import SiteTableHead from '../../sections/admin-table/user-table-head';
 import TableEmptyRows from '../../sections/admin-table/table-empty-rows';
 import SiteTableToolbar from '../../sections/admin-table/user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../../sections/admin-table/utils';
+import UserTableRow from './UserTableRow';
 
 export default function Passwords() {
   const [sites, setSites] = useState([]);
@@ -44,7 +45,6 @@ export default function Passwords() {
   const [filterUser, setFilterUser] = useState('');
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [newUsername, setNewUsername] = useState('');
-
 
   const fetchSites = async () => {
     try {
@@ -66,10 +66,8 @@ export default function Passwords() {
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
-    if (id !== '') {
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
-    }
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(id);
   };
 
   const handleSelectAllClick = (event) => {
@@ -113,7 +111,6 @@ export default function Passwords() {
     setFilterName(event.target.value);
   };
 
-
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setNewSiteName('');
@@ -132,17 +129,14 @@ export default function Passwords() {
       password: newPassword,
       email_verified: verified,
     };
-  
-    console.log('Creating site with data:', newSite); // Log the data to be sent
-  
+
     try {
       const response = await axios.post('http://localhost:5002/user/createPassword', newSite, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
       });
-      console.log('Response from server:', response.data); // Log server response
-  
+
       if (response.data.code) {
         setSites([...sites, response.data.data]);
         handleCloseDialog(); // Close the dialog after successful site creation
@@ -152,7 +146,6 @@ export default function Passwords() {
       setError('Error creating site.');
     }
   };
-  
 
   const handleOpenPasswordDialog = () => {
     setOpenPasswordDialog(true);
@@ -182,6 +175,12 @@ export default function Passwords() {
 
   const notFound = !dataFiltered.length && !!filterName;
 
+    const [visiblePasswordId, setVisiblePasswordId] = useState(null);
+
+  const handleTogglePasswordVisibility = (id) => {
+    setVisiblePasswordId((prevId) => (prevId === id ? null : id));
+  };
+
   return (
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
@@ -195,7 +194,7 @@ export default function Passwords() {
           onFilterName={handleFilterByName}
         />
 
-        <Scrollbar>
+<Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
             <Table sx={{ minWidth: 800 }}>
               <SiteTableHead
@@ -208,6 +207,7 @@ export default function Passwords() {
                 headLabel={[
                   { id: 'siteName', label: 'Site Name' },
                   { id: 'siteURL', label: 'Site URL' },
+                  { id: 'username', label: 'Username' },
                   { id: 'password', label: 'Password' },
                   { id: 'email_verified', label: 'Verified', align: 'center' },
                   { id: '' },
@@ -217,17 +217,18 @@ export default function Passwords() {
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <SiteTableRow
+                    <UserTableRow
                       key={row.id}
-                      name={row.siteName}
+                      full_name={row.siteName}
+                      email={row.siteURL}
+                      phone_number={row.username}
+                      company_name={row.password}
+                      email_verified={row.email_verified}
                       status={row.status}
-                      company={row.siteURL}
-                      password={row.password}
-                      isVerified={row.email_verified}
-                      number={row.number}
                       selected={selected.indexOf(row.siteName) !== -1}
-                      onClick={(event) => handleClick(event, row.siteName)}
-                      onPasswordClick={handleOpenPasswordDialog}
+                      handleClick={(event) => handleClick(event, row.siteName)}
+                      isPasswordVisible={visiblePasswordId === row.id}
+                      onTogglePasswordVisibility={() => handleTogglePasswordVisibility(row.id)}
                     />
                   ))}
 
@@ -238,6 +239,7 @@ export default function Passwords() {
             </Table>
           </TableContainer>
         </Scrollbar>
+
 
         <TablePagination
           page={page}
@@ -254,52 +256,52 @@ export default function Passwords() {
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Add New Site</DialogTitle>
         <DialogContent>
-  <TextField
-    autoFocus
-    margin="dense"
-    id="siteName"
-    label="Site Name"
-    type="text"
-    fullWidth
-    value={newSiteName}
-    onChange={(e) => setNewSiteName(e.target.value)}
-  />
-  <TextField
-    margin="dense"
-    id="siteURL"
-    label="Site URL"
-    type="text"
-    fullWidth
-    value={newSiteURL}
-    onChange={(e) => setNewSiteURL(e.target.value)}
-  />
-  <TextField
-    margin="dense"
-    id="username"
-    label="Username"
-    type="text"
-    fullWidth
-    value={newUsername}
-    onChange={(e) => setNewUsername(e.target.value)}
-  />
-  <TextField
-    margin="dense"
-    id="password"
-    label="Password"
-    type="password"
-    fullWidth
-    value={newPassword}
-    onChange={(e) => setNewPassword(e.target.value)}
-  />
-  <div style={{ display: 'flex', alignItems: 'center' }}>
-    <Checkbox
-      checked={verified}
-      onChange={(e) => setVerified(e.target.checked)}
-      color="primary"
-    />
-    <Typography>Verified</Typography>
-  </div>
-</DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="siteName"
+            label="Site Name"
+            type="text"
+            fullWidth
+            value={newSiteName}
+            onChange={(e) => setNewSiteName(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            id="siteURL"
+            label="Site URL"
+            type="text"
+            fullWidth
+            value={newSiteURL}
+            onChange={(e) => setNewSiteURL(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            id="username"
+            label="Username"
+            type="text"
+            fullWidth
+            value={newUsername}
+            onChange={(e) => setNewUsername(e.target.value)}
+          />
+          <TextField
+            margin="dense"
+            id="password"
+            label="Password"
+            type="password"
+            fullWidth
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+          <div style={{ display: 'flex', alignItems: 'center', marginTop: '16px' }}>
+            <Checkbox
+              checked={verified}
+              onChange={(e) => setVerified(e.target.checked)}
+              color="primary"
+            />
+            <Typography>Verified</Typography>
+          </div>
+        </DialogContent>
 
         <DialogActions>
           <Button onClick={handleCloseDialog} color="primary">
@@ -308,11 +310,9 @@ export default function Passwords() {
           <Button onClick={handleCreateSite} color="primary">
             Save
           </Button>
-          <Button onClick={handleCloseDialog} color="primary">
-            Exit
-          </Button>
         </DialogActions>
       </Dialog>
+
       {error && <Typography color="error">{error}</Typography>}
 
       {/* Dialog for managing password */}
@@ -333,8 +333,12 @@ export default function Passwords() {
             <div key={user.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '10px 0' }}>
               <Typography>{user.full_name}</Typography>
               <div>
-                <Button variant="contained" color="primary" onClick={() => handleGrantAccess(user)}>Grant Access</Button>
-                <Button variant="contained" color="secondary" onClick={() => handleRevokeAccess(user)}>Revoke Access</Button>
+                <Button variant="contained" color="primary" onClick={() => handleGrantAccess(user)}>
+                  Grant Access
+                </Button>
+                <Button variant="contained" color="secondary" onClick={() => handleRevokeAccess(user)}>
+                  Revoke Access
+                </Button>
               </div>
             </div>
           ))}

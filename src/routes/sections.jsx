@@ -12,7 +12,12 @@ import RegisterView from 'src/sections/login/RegisterView';
 import MediaAccountForm from 'src/sections/admin-table/MediaAccountForm';
 import BrandPage from 'src/pages/admin/Brand';
 import Logs from 'src/pages/admin/Logs';
+
 import Subscriptionindex from 'src/sections/admin-table/Subscriptionindex';
+import AdminProfilePage from 'src/sections/login/Profile';
+import UserProfilePage from 'src/pages/user/UserProfile';
+import VaultForm from 'src/pages/admin/Vault';
+import VaultTable from 'src/pages/admin/Vault';
 
 // import { AppView } from 'src/sections/overview/view';
 // import ClientDetails from 'src/sections/user/ClientDetails';
@@ -40,16 +45,16 @@ export default function Router() {
         </DashboardLayout>
       ),
       children: [
-        { element: <IndexPage />, index: true },
+        { path: 'dashboard', element: <IndexPage />, index: true },
         { path: 'brand', element: <BrandPage/>},
         { path: 'agency', element: <UserPage /> },
         { path: 'password', element: <Password/> },
         { path: 'clientinfo', element: <ClientDetails />},
-        { path: 'media', element: <Media/>},
         { path: 'logs', element: <Logs/>},
         { path: 'subscription', element: <Subscriptionindex/>},
-        { path: 'mediaform', element: <MediaAccountForm/>,
-        },
+        { path: 'mediaform', element: <MediaAccountForm/>},
+        { path:'profile',element: <AdminProfilePage/>},
+        { path:'vault',element: <VaultTable/>}
       ],
     },
     {
@@ -81,11 +86,12 @@ export default function Router() {
       ),
       children: [
         { element: <Passwords />, index:true  },
-        { path:'media-account', element: <Media />}
+        // { path:'media-account', element: <Media />},
+        {path:'userprofile',element: <UserProfilePage/>}
       ],
     },
     {
-      path: 'login',
+      path: '/',
       element: <LoginPage />,
     },
     { path: 'register', 
@@ -94,14 +100,14 @@ export default function Router() {
       path: '404',
       element: <Page404 />,
     },
-    {
-      path: '*',
-      element: <Navigate to="/404" replace />,
-    },
-    {
-      path: 'app',
-      element: <IndexPage />
-    }
+    // {
+    //   path: '*',
+    //   element: <Navigate to="/404" replace />,
+    // },
+    // {
+    //   path: 'dashboard',
+    //   element: <IndexPage />
+    // }
   ]);
 
   return routes;

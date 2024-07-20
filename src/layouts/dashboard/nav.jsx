@@ -72,7 +72,7 @@ export default function Nav({ openNav, onCloseNav, userRole }) {
 
   const renderUpgrade = (
     <Box sx={{ px: 2.5, pb: 3, mt: 10 }}>
-      <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
+      {/* <Stack alignItems="center" spacing={3} sx={{ pt: 5, borderRadius: 2, position: 'relative' }}>
 
         <Box sx={{ textAlign: 'center' }}>
           <Typography variant="h6">Get more?</Typography>
@@ -90,7 +90,7 @@ export default function Nav({ openNav, onCloseNav, userRole }) {
         >
           Upgrade to Pro
         </Button>
-      </Stack>
+      </Stack> */}
     </Box>
   );
 

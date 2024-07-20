@@ -16,25 +16,6 @@ import { Link } from 'react-router-dom';
 
 // ----------------------------------------------------------------------
 
-const MENU_OPTIONS = [
-  {
-    label: 'Home',
-    icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
-  },
-  {
-    label: 'Delete Account',
-    icon: 'eva:settings-2-fill',
-  },
-];
-
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
@@ -116,21 +97,18 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        {MENU_OPTIONS.map((option) => (
-          <MenuItem key={option.label} onClick={handleClose}>
-            {option.label}
-          </MenuItem>
-        ))}
-
         <Divider sx={{ borderStyle: 'dashed', m: 0 }} />
 
+        <Link to="/" style={{ textDecoration: 'none', color: 'inherit' }}>
         <MenuItem
           disableRipple
           disableTouchRipple
           sx={{ typography: 'body2', color: 'error.main', py: 1.5 }}
+          onClick={handlelogout}
         >
-          <Link to="/login" onClick={handlelogout}>Logout</Link>
+        Logout
         </MenuItem>
+        </Link>
       </Popover>
     </>
   );

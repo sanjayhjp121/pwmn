@@ -7,7 +7,6 @@ import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
-import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TextField from '@mui/material/TextField';
@@ -17,6 +16,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
+import IconButton from '@mui/material/IconButton';
+import Toolbar from '@mui/material/Toolbar'; // Importing Toolbar
+import SearchIcon from '@mui/icons-material/Search';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -42,6 +44,7 @@ export default function AgencyPage() {
   const [newAgencyDescription, setNewAgencyDescription] = useState('');
   const [newAgencyCompanyName, setNewAgencyCompanyName] = useState('');
   const [newAgencyAddress, setNewAgencyAddress] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const navigate = useNavigate();
 
   const fetchAgencies = async () => {
@@ -64,10 +67,8 @@ export default function AgencyPage() {
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
-    if (id !== '') {
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
-    }
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(id);
   };
 
   const handleSelectAllClick = (event) => {
@@ -141,6 +142,8 @@ export default function AgencyPage() {
         },
       });
       console.log('Response from server:', response.data);
+      fetchAgencies(); // Refresh agencies list
+      handleCloseClientDialog(); // Close dialog after creation
     } catch (err) {
       console.error('Error creating agency:', err);
       setError('Error creating agency.');
@@ -153,7 +156,18 @@ export default function AgencyPage() {
     filterName,
   });
 
-  const notFound = !dataFiltered.length && !!filterName;
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const filteredAgencies = dataFiltered.filter(agency =>
+    agency.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    agency.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    agency.company_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    agency.company_address.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const notFound = !filteredAgencies.length && !!searchQuery;
 
   return (
     <Container>
@@ -167,11 +181,23 @@ export default function AgencyPage() {
       </Stack>
 
       <Card>
-        <BrandTableToolbar
-          numSelected={selected.length}
-          filterName={filterName}
-          onFilterName={handleFilterByName}
-        />
+        <Toolbar>
+          <TextField
+            variant="outlined"
+            size="small"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            InputProps={{
+              endAdornment: (
+                <IconButton>
+                  <SearchIcon />
+                </IconButton>
+              ),
+            }}
+            sx={{ width: 400 }}
+          />
+        </Toolbar>
 
         <Scrollbar>
           <TableContainer sx={{ overflow: 'unset' }}>
@@ -192,7 +218,7 @@ export default function AgencyPage() {
                 ]}
               />
               <TableBody>
-                {dataFiltered
+                {filteredAgencies
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
                     <BrandTableRow
@@ -208,7 +234,7 @@ export default function AgencyPage() {
 
                 <TableEmptyRows height={77} emptyRows={emptyRows(page, rowsPerPage, agencies.length)} />
 
-                {notFound && <TableNoData query={filterName} />}
+                {notFound && <TableNoData query={searchQuery} />}
               </TableBody>
             </Table>
           </TableContainer>
@@ -270,7 +296,6 @@ export default function AgencyPage() {
         <DialogActions>
           <Button onClick={handleCloseClientDialog}>Cancel</Button>
           <Button onClick={handleCreateClient}>Save</Button>
-          <Button onClick={handleCloseClientDialog}>Exit</Button>
         </DialogActions>
       </Dialog>
 

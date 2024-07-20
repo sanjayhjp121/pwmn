@@ -13,35 +13,35 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogContent from '@mui/material/DialogContent';
+import DialogActions from '@mui/material/DialogActions';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from 'src/components/scrollbar';
 
 import TableNoData from '../../sections/admin-table/table-no-data';
-import UserTableRow from '../../sections/admin-table/user-table-row';
 import UserTableHead from '../../sections/admin-table/user-table-head';
 import TableEmptyRows from '../../sections/admin-table/table-empty-rows';
 import UserTableToolbar from '../../sections/admin-table/user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../../sections/admin-table/utils';
+import SuperAdminTableRow from './SuperAdminTableRow';
 
 export default function TotalAdmins() {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(0);
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
-  const [orderBy, setOrderBy] = useState('name');
+  const [orderBy, setOrderBy] = useState('full_name');
   const [filterName, setFilterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [verified, setVerified] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
   const [newUserName, setNewUserName] = useState('');
-  const [newUserCompany, setNewUserCompany] = useState('');
   const [newUserStatus, setNewUserStatus] = useState('active');
   const [error, setError] = useState(null);
   const [newEmail, setNewEmail] = useState('');
-  const [phone_number, setNumber] = useState('');
-  const [plan, setPlan] = useState(''); // Add the missing plan state
+  const [phone_number, setPhoneNumber] = useState('');
+  const [plan, setPlan] = useState('');
 
   const fetchUsers = async () => {
     try {
@@ -111,16 +111,40 @@ export default function TotalAdmins() {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setNewUserName('');
-    setNewUserCompany('');
     setVerified(false);
     setNewUserStatus('active');
-    setNumber('');
+    setPhoneNumber('');
     setNewEmail('');
-    setPlan(''); // Reset plan state
+    setPlan('');
   };
 
   const handlePlanClick = (planName) => {
     setPlan(planName);
+  };
+
+  const handleSaveNewAdmin = async () => {
+    try {
+      const newAdmin = {
+        full_name: newUserName,
+        email: newEmail,
+        phone_number,
+        email_verified: verified,
+        status: newUserStatus,
+        plan,
+      };
+
+      await axios.post('http://localhost:5002/admin/addUser', newAdmin, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+
+      fetchUsers();
+      handleCloseDialog();
+    } catch (err) {
+      console.error('Error saving new admin:', err);
+      setError('Error saving new admin.');
+    }
   };
 
   const dataFiltered = applyFilter({
@@ -135,6 +159,9 @@ export default function TotalAdmins() {
     <Container>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
         <Typography variant="h4">Admins</Typography>
+        <Button variant="contained" onClick={() => setOpenDialog(true)}>
+          Add Admin
+        </Button>
       </Stack>
 
       <Card>
@@ -156,7 +183,7 @@ export default function TotalAdmins() {
                 onSelectAllClick={handleSelectAllClick}
                 headLabel={[
                   { id: 'full_name', label: 'Name' },
-                  { id: 'company_name', label: 'Company' },
+                  { id: 'email', label: 'Email' },
                   { id: 'email_verified', label: 'Verified', align: 'center' },
                   { id: 'status', label: 'Status' },
                   { id: '' },
@@ -166,16 +193,15 @@ export default function TotalAdmins() {
                 {dataFiltered
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row) => (
-                    <UserTableRow
+                    <SuperAdminTableRow
                       key={row.id}
-                      name={row.full_name}
+                      full_name={row.full_name}
+                      email={row.email}
+                      email_verified={row.email_verified}
                       status={row.status}
-                      company={row.company_name}
-                      avatarUrl={row.avatarUrl}
-                      isVerified={row.email_verified}
-                      number={row.number}
+                      profile_image={row.profile_image}
                       selected={selected.indexOf(row.full_name) !== -1}
-                      onClick={(event) => handleClick(event, row.full_name)}
+                      handleClick={(event) => handleClick(event, row.full_name)}
                     />
                   ))}
 
@@ -198,7 +224,7 @@ export default function TotalAdmins() {
         />
       </Card>
 
-      {/* Dialog for adding new user */}
+      {/* Dialog for adding new admin */}
       <Dialog open={openDialog} onClose={handleCloseDialog}>
         <DialogTitle>Add New Admin</DialogTitle>
         <DialogContent>
@@ -216,10 +242,10 @@ export default function TotalAdmins() {
             margin="dense"
             id="phone_number"
             label="Phone Number"
-            type="number"
+            type="text"
             fullWidth
             value={phone_number}
-            onChange={(e) => setNumber(e.target.value)}
+            onChange={(e) => setPhoneNumber(e.target.value)}
           />
           <TextField
             margin="dense"
@@ -229,15 +255,6 @@ export default function TotalAdmins() {
             fullWidth
             value={newEmail}
             onChange={(e) => setNewEmail(e.target.value)}
-          />
-          <TextField
-            margin="dense"
-            id="company"
-            label="Company"
-            type="text"
-            fullWidth
-            value={newUserCompany}
-            onChange={(e) => setNewUserCompany(e.target.value)}
           />
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <Checkbox
@@ -271,6 +288,14 @@ export default function TotalAdmins() {
             onChange={(e) => setPlan(e.target.value)}
           />
         </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleSaveNewAdmin} color="primary">
+            Save
+          </Button>
+        </DialogActions>
       </Dialog>
       {error && <Typography color="error">{error}</Typography>}
     </Container>

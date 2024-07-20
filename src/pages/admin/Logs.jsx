@@ -74,31 +74,41 @@ const Logs = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(log => (
-                <TableRow key={log.id}>
-                  <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Avatar sx={{ bgcolor: 'red', mr: 2 }}>{log.email.charAt(0)}</Avatar>
-                      {log.email}
-                    </Box>
+              {filteredLogs.length > 0 ? (
+                filteredLogs.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(log => (
+                  <TableRow key={log.id}>
+                    <TableCell>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar sx={{ bgcolor: 'red', mr: 2 }}>{log.email.charAt(0)}</Avatar>
+                        {log.email}
+                      </Box>
+                    </TableCell>
+                    <TableCell>{log.action}</TableCell>
+                    <TableCell>{log.timestamp}</TableCell>
+                    <TableCell>{log.ip}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={4} sx={{ textAlign: 'center' }}>
+                    <Typography variant="h6" color="textSecondary">No logs available</Typography>
                   </TableCell>
-                  <TableCell>{log.action}</TableCell>
-                  <TableCell>{log.timestamp}</TableCell>
-                  <TableCell>{log.ip}</TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
-        <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
-          component="div"
-          count={filteredLogs.length}
-          rowsPerPage={rowsPerPage}
-          page={page}
-          onPageChange={handleChangePage}
-          onRowsPerPageChange={handleChangeRowsPerPage}
-        />
+        {filteredLogs.length > 0 && (
+          <TablePagination
+            rowsPerPageOptions={[5, 10, 25]}
+            component="div"
+            count={filteredLogs.length}
+            rowsPerPage={rowsPerPage}
+            page={page}
+            onPageChange={handleChangePage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
+        )}
       </Box>
     </Container>
   );

@@ -9,7 +9,7 @@ const icon = (name) => (
 const adminRoutes = [
   {
     title: 'dashboard',
-    path: '/',
+    path: '/dashboard',
     icon: icon('ic_analytics'),
   },
   {
@@ -24,13 +24,18 @@ const adminRoutes = [
   },
   {
     title: 'Vault',
-    path: 'agency',
+    path: 'vault',
     icon: icon('ic_user'),
   },
   {
     title: 'Logs',
     path: '/logs',
     icon: icon('ic_lock'),
+  },
+  {
+    title: 'Profile',
+    path: '/profile',
+    icon: icon('ic_user'),
   },
 ];
 
@@ -55,16 +60,6 @@ const superAdminRoutes = [
     path: '/superadmin/admins',
     icon: icon('ic_admin'),
   },
-  {
-    title: 'Media Account',
-    path: '/superadmin/media-account',
-    icon: icon('ic_medias'),
-  },
-  {
-    title: 'Logout',
-    path: '/login',
-    icon: icon('ic_login'),
-  },
 ];
 
 const userRoutes = [
@@ -74,10 +69,15 @@ const userRoutes = [
     icon: icon('ic_lock')
   },
   {
-    title: 'Logout',
-    path: '/login',
-    icon: icon('ic_login'),
+    title: 'Profile',
+    path: '/user/userprofile',
+    icon: icon('ic_user'),
   },
+  // {
+  //   title: 'Media Account',
+  //   path: '/user/media-account',
+  //   icon: icon('ic_media')
+  // }
 ];
 
 const navConfig = (userRole) => {

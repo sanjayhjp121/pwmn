@@ -4,15 +4,12 @@ import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputAdornment from '@mui/material/InputAdornment';
-import SearchIcon from '@mui/icons-material/Search';
 
 import Iconify from 'src/components/iconify';
 
 // ----------------------------------------------------------------------
 
-export default function UserTableToolbar({ numSelected, filterName, onFilterName }) {
+export default function UserTableToolbar({ numSelected }) {
   return (
     <Toolbar
       sx={{
@@ -26,26 +23,6 @@ export default function UserTableToolbar({ numSelected, filterName, onFilterName
         }),
       }}
     >
-      {numSelected > 0 ? (
-        <Typography component="div" variant="subtitle1">
-          {numSelected} selected
-        </Typography>
-      ) : (
-        <OutlinedInput
-          value={filterName}
-          onChange={onFilterName}
-          placeholder="Search ..."
-          startAdornment={
-            <InputAdornment position="start">
-              <Iconify
-                icon="eva:search-fill"
-                sx={{ color: 'text.disabled', width: 20, height: 20 }}> 
-                <SearchIcon />
-              </Iconify>
-            </InputAdornment>
-          }
-        />
-      )}
 
       {numSelected > 0 ? (
         <Tooltip title="Delete">
@@ -66,6 +43,4 @@ export default function UserTableToolbar({ numSelected, filterName, onFilterName
 
 UserTableToolbar.propTypes = {
   numSelected: PropTypes.number,
-  filterName: PropTypes.string,
-  onFilterName: PropTypes.func,
 };

@@ -4,23 +4,23 @@ import PropTypes from 'prop-types';
 import Stack from '@mui/material/Stack';
 import Avatar from '@mui/material/Avatar';
 import Popover from '@mui/material/Popover';
-import { TableRow, TableCell, Checkbox, IconButton } from '@mui/material';
-// import Checkbox from '@mui/material/Checkbox';
+import TableRow from '@mui/material/TableRow';
+import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
-// import TableCell from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
-// import IconButton from '@mui/material/IconButton';
+import IconButton from '@mui/material/IconButton';
 
 import Iconify from 'src/components/iconify';
 
-export default function UserTableRow({
+export default function SuperAdminTableRow({
   selected,
   full_name,
-  company_name,
+  email,
   email_verified,
   status,
   handleClick,
-  avatarUrl, // Assuming this is provided elsewhere in your app
+  profile_image, // Assuming this is provided elsewhere in your app
 }) {
   const [open, setOpen] = useState(null);
 
@@ -48,14 +48,14 @@ export default function UserTableRow({
 
         <TableCell component="th" scope="row" padding="none">
           <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={full_name} src={avatarUrl} />
+            <Avatar alt={full_name} src={profile_image} />
             <Typography variant="subtitle2" noWrap>
               {full_name}
             </Typography>
           </Stack>
         </TableCell>
 
-        <TableCell>{company_name}</TableCell>
+        <TableCell>{email}</TableCell>
 
         <TableCell align="center">{email_verified ? 'Yes' : 'No'}</TableCell>
 
@@ -92,12 +92,12 @@ export default function UserTableRow({
   );
 }
 
-UserTableRow.propTypes = {
-  avatarUrl: PropTypes.string, // Assuming avatarUrl is a string (URL to avatar image)
-  company_name: PropTypes.string.isRequired,
+SuperAdminTableRow.propTypes = {
+  profile_image: PropTypes.string, // Assuming profile_image is a string (URL to avatar image)
+  email: PropTypes.string.isRequired,
   full_name: PropTypes.string.isRequired,
   handleClick: PropTypes.func.isRequired,
   email_verified: PropTypes.bool.isRequired,
   status: PropTypes.string.isRequired,
-  selected: PropTypes.bool,
+  selected: PropTypes.bool.isRequired,
 };
