@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 
 import { Box, Paper, Button, Divider, Typography, CircularProgress } from '@mui/material';
+
 import MediaAccountsTable from './MediaAccountsTable';
 
 const ClientDetails = () => {

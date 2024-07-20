@@ -83,11 +83,11 @@ export default function UserProfilePage() {
 
   const handleImageChange = async (file) => {
     const token = localStorage.getItem('token');
-    const formData = new FormData();
-    formData.append('profileImage', file);
+    const imageFormData = new FormData(); // Renamed variable
+    imageFormData.append('profileImage', file);
 
     try {
-      const response = await axios.post('http://localhost:5002/member/uploadProfileImage', formData, {
+      const response = await axios.post('http://localhost:5002/member/uploadProfileImage', imageFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

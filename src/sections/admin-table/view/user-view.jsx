@@ -1,5 +1,7 @@
-import { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useCallback } from 'react';
+
 import {
   Card,
   Stack,
@@ -7,32 +9,32 @@ import {
   Button,
   Dialog,
   Checkbox,
+  TableRow,
   Container,
   TableBody,
   TextField,
+  TableCell,
   Typography,
+  IconButton,
   DialogTitle,
   DialogContent,
   DialogActions,
   TableContainer,
   TablePagination,
-  TableRow,
-  TableCell,
-  IconButton
 } from '@mui/material';
+
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-import TableNoData from '../table-no-data';
+
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
 import { emptyRows, applyFilter, getComparator } from '../utils';
-import axios from 'axios';
 
 const generateRandomPassword = () => {
   const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
   let password = '';
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 8; i+1) {
     password += chars.charAt(Math.floor(Math.random() * chars.length));
   }
   return password;
@@ -44,7 +46,7 @@ export default function UserPage() {
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('full_name');
-  const [filterName, setFilterName] = useState('');
+  const [filterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [verified, setVerified] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
@@ -57,17 +59,17 @@ export default function UserPage() {
   const [openMediaDialog, setOpenMediaDialog] = useState(false);
   const [mediaName, setMediaName] = useState(''); // Placeholder state for media
   const [password, setPassword] = useState('');
-  const [loadingPassword, setLoadingPassword] = useState(false);
+  const [loadingPassword] = useState(false);
   const navigate = useNavigate();
 
   const urlObject = new URL(window.location.href);
-  const [agencyId, setAgencyId] = useState(urlObject.searchParams.get('agencyid'));
+  const [agencyId] = useState(urlObject.searchParams.get('agencyid'));
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const response = await axios.get('http://localhost:5002/user/listAllMember', {
         params: {
-          agencyid: agencyId // Send agencyId as a query parameter
+          agencyid: agencyId, // Send agencyId as a query parameter
         },
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -78,11 +80,12 @@ export default function UserPage() {
       console.error('Error fetching users:', err);
       setError('Error fetching users.');
     }
-  };
+  }, [agencyId]); // Add agencyId to the dependency array
+
 
   useEffect(() => {
     fetchUsers();
-  }, [page]);
+  }, [page, fetchUsers]);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
@@ -154,7 +157,7 @@ export default function UserPage() {
       email_verified: verified,
       status: newUserStatus,
       password, // Include the generated password
-      agencyId: agencyId,
+      agencyId,
     };
 
     try {

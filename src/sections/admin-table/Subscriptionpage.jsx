@@ -1,6 +1,7 @@
 // /components/SubscriptionList.js
 import * as React from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
+
+import { Table, Paper, Button, TableRow, TableBody, TableCell, TableHead, TableContainer } from '@mui/material';
 
 const subscriptions = [
   {
@@ -13,7 +14,7 @@ const subscriptions = [
   // Add more subscriptions here
 ];
 
-export default function Subscriptionpage({ onAddSubscription }) {
+export default function Subscriptionpage( onAddSubscription ) {
   return (
     <TableContainer component={Paper}>
       <Button variant="contained" color="primary" onClick={onAddSubscription} style={{ margin: 16 }}>

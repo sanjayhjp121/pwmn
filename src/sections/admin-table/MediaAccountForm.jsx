@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { Box, Button, TextField, Typography, Autocomplete, MenuItem, FormControl, InputLabel, Select } from '@mui/material';
+
+import { Box, Button, Select, MenuItem, TextField, Typography, InputLabel, FormControl } from '@mui/material';
 
 const platforms = [
   { name: 'Facebook', logo: 'https://via.placeholder.com/24?text=FB' },

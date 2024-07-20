@@ -1,8 +1,9 @@
 // /pages/index.js
 import * as React from 'react';
-import { Container } from '@mui/material';
-import SubscriptionList from './Subscriptionpage';
 
+import { Container } from '@mui/material';
+
+import SubscriptionList from './Subscriptionpage';
 import SubscriptionForm from './SubscriptionForm';
 
 export default function Subscriptionindex() {

@@ -1,8 +1,9 @@
 // /components/SubscriptionForm.js
 import * as React from 'react';
-import { Box, Button, TextField, MenuItem, FormControlLabel, Checkbox, Typography } from '@mui/material';
 
-export default function SubscriptionForm({ onCancel }) {
+import { Box, Button, MenuItem, Checkbox, TextField, Typography, FormControlLabel } from '@mui/material';
+
+export default function SubscriptionForm( onCancel ) {
   const [form, setForm] = React.useState({
     category: '',
     name: '',

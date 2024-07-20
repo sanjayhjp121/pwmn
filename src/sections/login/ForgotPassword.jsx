@@ -1,17 +1,21 @@
+import axios from 'axios';
 import { useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+
+import LoadingButton from '@mui/lab/LoadingButton';
+import { alpha, useTheme } from '@mui/material/styles';
 import {
     Box,
     Card,
     Stack,
-    Button,
+    Divider,
     TextField,
     Typography,
-    Divider,
     Link as MuiLink,
 } from '@mui/material';
-import { alpha, useTheme } from '@mui/material/styles';
+
 import { bgGradient } from 'src/theme/css';
-import axios from 'axios';
+
 import Logo from 'src/components/logo';
 
 export default function ForgotPassword() {
@@ -65,7 +69,7 @@ export default function ForgotPassword() {
                 >
                     <Typography variant="h4">Forgot Password</Typography>
                     <Typography variant="body2" sx={{ mt: 2, mb: 5 }}>
-                        Enter your email address below and we'll send you a link to reset your password.
+                        Enter your email address below and we will send you a link to reset your password.
                     </Typography>
 
                     <Stack spacing={3}>

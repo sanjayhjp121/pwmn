@@ -1,20 +1,21 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
+
+import { LoadingButton } from '@mui/lab';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
   Card,
+  Grid,
   Stack,
-  Typography,
-  TextField,
   Button,
+  Avatar,
+  Divider,
+  TextField,
+  Typography,
   IconButton,
   InputAdornment,
-  Divider,
-  Avatar,
-  Grid,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);
@@ -45,10 +46,10 @@ export default function ProfilePage() {
       try {
         const token = localStorage.getItem('token');
         if (!token) {
-          return;
+          throw new Error('No token found');
         }
 
-        const response = await axios.get(`http://localhost:5002/user/getProfile`, {
+        const response = await axios.get('http://localhost:5002/user/getProfile', {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userData = response.data.data;
@@ -80,16 +81,17 @@ export default function ProfilePage() {
   }, []);
 
   const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
   const handleImageChange = async (file) => {
     const token = localStorage.getItem('token');
-    const formDatas = new FormData();
-    formDatas.append('profileImage', file);
+    const imageFormData = new FormData(); // Renamed to avoid shadowing
+    imageFormData.append('profileImage', file);
 
     try {
-      const response = await axios.post('http://localhost:5002/user/uploadProfileImage', formData, {
+      const response = await axios.post('http://localhost:5002/user/uploadProfileImage', imageFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,
@@ -151,7 +153,7 @@ export default function ProfilePage() {
             cursor: 'pointer',
             width: 150,
             height: 150,
-            mx: 'auto'
+            mx: 'auto',
           }}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
@@ -277,7 +279,7 @@ export default function ProfilePage() {
                   endAdornment: (
                     <InputAdornment position="end">
                       <IconButton
-                        onClick={() => setShowPassword(!showPassword)}
+                        onClick={() => setShowPassword(prev => !prev)}
                         edge="end"
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
