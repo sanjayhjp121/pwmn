@@ -33,7 +33,7 @@ const Logs = () => {
 
   const fetchLogs = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_PORT}/user/logs`); // Replace with your backend API endpoint
+      const response = await axios.get(`http://13.233.225.3:5002/user/logs`); // Replace with your backend API endpoint
       setAuditLogs(response.data.logs); // Assuming your backend returns logs in a 'logs' property
     } catch (error) {
       console.error('Error fetching logs:', error);

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
+// import { defineConfig, loadEnv } from 'vite'
 
 import LoadingButton from '@mui/lab/LoadingButton';
 import { alpha, useTheme } from '@mui/material/styles';
@@ -38,7 +39,7 @@ export default function LoginView() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_PORT}/${userType}/login`, {
+      const response = await axios.post(`http://13.233.225.3:5002/${userType}/login`, {
         email,
         password,
       });

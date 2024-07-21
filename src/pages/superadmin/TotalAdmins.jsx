@@ -45,7 +45,7 @@ export default function TotalAdmins() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_PORT}/admin/getUserList`, {
+      const response = await axios.get(`http://13.233.225.3:5002/admin/getUserList`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -133,7 +133,7 @@ export default function TotalAdmins() {
         plan,
       };
 
-      await axios.post(`${process.env.REACT_APP_PORT}/admin/addUser`, newAdmin, {
+      await axios.post(`http://13.233.225.3:5002/admin/addUser`, newAdmin, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

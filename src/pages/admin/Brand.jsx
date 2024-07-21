@@ -50,7 +50,7 @@ export default function AgencyPage() {
   const fetchAgencies = async () => {
     // const { agencyId } = useParams()
     try {
-      const response = await axios.get(`${process.env.REACT_APP_PORT}/user/listAllAgency`, {
+      const response = await axios.get(`http://13.233.225.3:5002/user/listAllAgency`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -140,7 +140,7 @@ export default function AgencyPage() {
     console.log('Creating agency with data:', newAgency);
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_PORT}/user/createAgency`, newAgency, {
+      const response = await axios.post(`http://13.233.225.3:5002/user/createAgency`, newAgency, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

@@ -24,7 +24,7 @@ export default function VaultForm( onClose ) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${process.env.REACT_APP_PORT}/vault/create`, formData);
+            const response = await axios.post(`http://13.233.225.3:5002/vault/create`, formData);
             alert(response.data.message);
             onClose();
         } catch (error) {

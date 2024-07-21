@@ -45,7 +45,7 @@ export default function RegisterView() {
     setError(null);
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_PORT}/${userType}/signup`, {
+      const response = await axios.post(`http://13.233.225.3:5002/${userType}/signup`, {
         email,
         password,
         full_name: fullName,

@@ -28,7 +28,7 @@ export default function VaultTable() {
 
     const fetchVaults = async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_PORT}/vault/all`);
+            const response = await axios.get(`http://13.233.225.3:5002/vault/all`);
             setVaults(response.data);
         } catch (error) {
             console.error('Error fetching vault data:', error);
