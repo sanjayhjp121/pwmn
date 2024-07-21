@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Box from '@mui/material/Box';
 import Link from '@mui/material/Link';
 import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
@@ -33,6 +34,7 @@ export default function RegisterView() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [countryCode, setCountryCode] = useState('+91'); // Default country code
   const [phoneNumber, setPhoneNumber] = useState('');
   const [error, setError] = useState(null);
   const [userType, setUserType] = useState('user');
@@ -43,11 +45,11 @@ export default function RegisterView() {
     setError(null);
 
     try {
-      const response = await axios.post(`http://localhost:5002/${userType}/signup`, {
+      const response = await axios.post(`${process.env.REACT_APP_PORT}/${userType}/signup`, {
         email,
         password,
         full_name: fullName,
-        phone_number: phoneNumber,
+        phone_number: `${countryCode}${phoneNumber}`,
       });
 
       if (response.data.code === 200) {
@@ -83,12 +85,24 @@ export default function RegisterView() {
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <TextField
-          name="phoneNumber"
-          label="Phone Number"
-          value={phoneNumber}
-          onChange={(e) => setPhoneNumber(e.target.value)}
-        />
+        <Grid container spacing={0.5}>
+          <Grid item xs={4}>
+            <TextField
+              name="countryCode"
+              label="Code"
+              value={countryCode}
+              onChange={(e) => setCountryCode(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={8}>
+            <TextField
+              name="phoneNumber"
+              label="Phone Number"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+            />
+          </Grid>
+        </Grid>
 
         <TextField
           name="password"
@@ -121,6 +135,7 @@ export default function RegisterView() {
         variant="contained"
         color="inherit"
         loading={loading}
+        sx={{ mt: 2 }}
       >
         Register
       </LoadingButton>
@@ -163,7 +178,6 @@ export default function RegisterView() {
           </Typography>
 
           <Stack direction="row" spacing={2}>
-
             <Button
               fullWidth
               size="large"

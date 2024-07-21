@@ -27,7 +27,7 @@ export default function MediaManager() {
 
   const fetchImages = async () => {
     try {
-      const response = await axios.get('http://localhost:5002/admin/getImages', {
+      const response = await axios.get(`${process.env.REACT_APP_PORT}/admin/getImages`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -51,7 +51,7 @@ export default function MediaManager() {
     formData.append('image', file);
 
     try {
-      const response = await axios.post('http://localhost:5002/admin/uploadImage', formData, {
+      const response = await axios.post(`${process.env.REACT_APP_PORT}/admin/uploadImage`, formData, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
           'Content-Type': 'multipart/form-data',
@@ -67,7 +67,7 @@ export default function MediaManager() {
 
   const handleDeleteImage = async (id) => {
     try {
-      await axios.delete(`http://localhost:5002/admin/deleteImage/${id}`, {
+      await axios.delete(`${process.env.REACT_APP_PORT}/admin/deleteImage/${id}`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

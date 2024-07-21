@@ -49,7 +49,7 @@ export default function Password() {
 
   const fetchSites = async () => {
     try {
-      const response = await axios.get('http://localhost:5002/member/getGrantedPasswordList', {
+      const response = await axios.get(`${process.env.REACT_APP_PORT}/member/getGrantedPasswordList`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -140,7 +140,7 @@ export default function Password() {
     console.log('Creating site with data:', newSite); // Log the data to be sent
   
     try {
-      const response = await axios.post('http://localhost:5002/user/createPassword', newSite, {
+      const response = await axios.post(`${process.env.REACT_APP_PORT}/user/createPassword`, newSite, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

@@ -2,26 +2,25 @@ import { lazy, Suspense } from 'react';
 import { Outlet, useRoutes } from 'react-router-dom';
 
 // External imports
+import Logs from 'src/pages/admin/Logs'; 
 import Media from 'src/pages/admin/Media';
+import BrandPage from 'src/pages/admin/Brand';
+import VaultTable from 'src/pages/admin/Vault';
 import Password from 'src/pages/admin/Password';
 import Passwords from 'src/pages/user/Passwords';
 import Members from 'src/pages/superadmin/Members';
-import Logs from 'src/pages/admin/Logs'; // Moved here
-import BrandPage from 'src/pages/admin/Brand';
-import TotalAdmins from 'src/pages/superadmin/TotalAdmins';
-import VaultTable from 'src/pages/admin/Vault'; // Moved here
-import UserProfilePage from 'src/pages/user/UserProfile';
-
-// Absolute imports
 import DashboardLayout from 'src/layouts/dashboard';
+import UserProfilePage from 'src/pages/user/UserProfile';
+import TotalAdmins from 'src/pages/superadmin/TotalAdmins';
+
 import AdminProfilePage from 'src/sections/login/Profile';
 import RegisterView from 'src/sections/login/RegisterView';
 import ForgotPassword from 'src/sections/login/ForgotPassword';
-import MediaAccountForm from 'src/sections/admin-table/MediaAccountForm';
-import Subscriptionindex from 'src/sections/admin-table/Subscriptionindex';
 import ClientDetails from 'src/sections/admin-table/ClientDetails'; // Moved here
 import PaymentSettings from 'src/pages/superadmin/PaymentSettings'; // Moved here
-import DeletePassword from 'src/pages/superadmin/DeletePassword'; // Moved here
+import MediaAccountForm from 'src/sections/admin-table/MediaAccountForm';
+import Subscriptionindex from 'src/sections/admin-table/Subscriptionindex';
+
 
 // Lazy imports
 export const IndexPage = lazy(() => import('src/pages/admin/app'));
@@ -65,7 +64,6 @@ export default function Router() {
       children: [
         { element: <IndexPage />, index: true },
         { path: 'payment', element: <PaymentSettings /> },
-        { path: 'delete-password', element: <DeletePassword /> },
         { path: 'admins', element: <TotalAdmins /> },
         { path: 'members', element: <Members /> },
         { path: 'media-account', element: <Media /> },

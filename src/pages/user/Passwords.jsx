@@ -19,13 +19,12 @@ import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from 'src/components/scrollbar';
 
+import UserTableRow from './UserTableRow';
 import TableNoData from '../../sections/admin-table/table-no-data';
-import SiteTableRow from '../../sections/admin-table/user-table-row';
 import SiteTableHead from '../../sections/admin-table/user-table-head';
 import TableEmptyRows from '../../sections/admin-table/table-empty-rows';
 import SiteTableToolbar from '../../sections/admin-table/user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../../sections/admin-table/utils';
-import UserTableRow from './UserTableRow';
 
 export default function Passwords() {
   const [sites, setSites] = useState([]);
@@ -48,7 +47,7 @@ export default function Passwords() {
 
   const fetchSites = async () => {
     try {
-      const response = await axios.get('http://localhost:5002/member/getGrantedPasswordList', {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/member/getGrantedPasswordList`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -131,7 +130,7 @@ export default function Passwords() {
     };
 
     try {
-      const response = await axios.post('http://localhost:5002/user/createPassword', newSite, {
+      const response = await axios.post(`${process.env.REACT_APP_PORT}/user/createPassword`, newSite, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -147,9 +146,9 @@ export default function Passwords() {
     }
   };
 
-  const handleOpenPasswordDialog = () => {
-    setOpenPasswordDialog(true);
-  };
+  // const handleOpenPasswordDialog = () => {
+  //   setOpenPasswordDialog(true);
+  // };
 
   const handleSearchUser = (event) => {
     setFilterUser(event.target.value);

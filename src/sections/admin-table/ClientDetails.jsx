@@ -20,7 +20,7 @@ const ClientDetails = () => {
     const fetchClientDetails = async () => {
       try {
         // Fetch client details (replace with your actual client details endpoint if needed)
-        const clientResponse = await axios.get('http://localhost:5002/user/listAllPasswordByAgency', {
+        const clientResponse = await axios.get(`${process.env.REACT_APP_PORT}/user/listAllPasswordByAgency`, {
           params: { agencyid: agencyId },
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -29,7 +29,7 @@ const ClientDetails = () => {
         setClient(clientResponse.data.data); // Adjust this based on actual response structure
 
         // Fetch media accounts related to the client
-        const mediaResponse = await axios.get('http://localhost:5002/user/listAllPasswordByAgency', {
+        const mediaResponse = await axios.get(`${process.env.REACT_APP_PORT}/user/listAllPasswordByAgency`, {
           params: { agencyid: agencyId },
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('token')}`,

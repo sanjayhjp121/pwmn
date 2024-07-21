@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import {
-    TextField,
-    Button,
-    Stack
-} from '@mui/material';
 import axios from 'axios';
+import { useState } from 'react';
+
+import {
+    Stack,
+    Button,
+    TextField,
+} from '@mui/material';
 
 export default function VaultForm( onClose ) {
     const [formData, setFormData] = useState({
@@ -23,7 +24,7 @@ export default function VaultForm( onClose ) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/vault/create', formData);
+            const response = await axios.post(`${process.env.REACT_APP_PORT}/vault/create`, formData);
             alert(response.data.message);
             onClose();
         } catch (error) {

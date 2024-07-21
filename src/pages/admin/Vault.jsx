@@ -1,23 +1,25 @@
+import axios from 'axios';
 import { useState, useEffect } from 'react';
+
 import {
-    Container,
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
+    Box,
+    Stack,
     Paper,
+    Table,
     Button,
     Dialog,
+    TableRow,
+    Container,
+    TableBody,
+    TableCell,
+    TableHead,
+    Typography,
+    DialogTitle,
     DialogActions,
     DialogContent,
-    DialogTitle,
-    Typography,
-    Stack,
-    Box
+    TableContainer,
 } from '@mui/material';
-import axios from 'axios';
+
 import VaultForm from './VaultForm';
 
 export default function VaultTable() {
@@ -26,7 +28,7 @@ export default function VaultTable() {
 
     const fetchVaults = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/vault/all');
+            const response = await axios.get(`${process.env.REACT_APP_PORT}/vault/all`);
             setVaults(response.data);
         } catch (error) {
             console.error('Error fetching vault data:', error);

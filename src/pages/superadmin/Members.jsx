@@ -40,7 +40,7 @@ export default function Members() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5002/user/listAllMember', {
+      const response = await axios.get(`${process.env.REACT_APP_PORT}/user/listAllMember`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

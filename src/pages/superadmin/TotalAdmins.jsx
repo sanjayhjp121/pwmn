@@ -19,12 +19,12 @@ import TablePagination from '@mui/material/TablePagination';
 
 import Scrollbar from 'src/components/scrollbar';
 
+import SuperAdminTableRow from './SuperAdminTableRow';
 import TableNoData from '../../sections/admin-table/table-no-data';
 import UserTableHead from '../../sections/admin-table/user-table-head';
 import TableEmptyRows from '../../sections/admin-table/table-empty-rows';
 import UserTableToolbar from '../../sections/admin-table/user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../../sections/admin-table/utils';
-import SuperAdminTableRow from './SuperAdminTableRow';
 
 export default function TotalAdmins() {
   const [users, setUsers] = useState([]);
@@ -45,7 +45,7 @@ export default function TotalAdmins() {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get('http://localhost:5002/admin/getUserList', {
+      const response = await axios.get(`${process.env.REACT_APP_PORT}/admin/getUserList`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -133,7 +133,7 @@ export default function TotalAdmins() {
         plan,
       };
 
-      await axios.post('http://localhost:5002/admin/addUser', newAdmin, {
+      await axios.post(`${process.env.REACT_APP_PORT}/admin/addUser`, newAdmin, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

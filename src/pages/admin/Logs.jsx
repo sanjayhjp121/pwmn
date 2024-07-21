@@ -1,7 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, TextField, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Avatar, TablePagination, Toolbar, IconButton } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+
+import SearchIcon from '@mui/icons-material/Search';
+import {
+  Box,
+  Paper,
+  Table,
+  Avatar,
+  Toolbar,
+  TableRow,
+  Container,
+  TableBody,
+  TableCell,
+  TableHead,
+  TextField,
+  IconButton,
+  Typography,
+  TableContainer,
+  TablePagination,
+} from '@mui/material';
+
 
 const Logs = () => {
   const [auditLogs, setAuditLogs] = useState([]);
@@ -15,7 +33,7 @@ const Logs = () => {
 
   const fetchLogs = async () => {
     try {
-      const response = await axios.get('/api/logs'); // Replace with your backend API endpoint
+      const response = await axios.get(`${process.env.REACT_APP_PORT}/user/logs`); // Replace with your backend API endpoint
       setAuditLogs(response.data.logs); // Assuming your backend returns logs in a 'logs' property
     } catch (error) {
       console.error('Error fetching logs:', error);

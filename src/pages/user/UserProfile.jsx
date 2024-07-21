@@ -1,20 +1,21 @@
-import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
+
+import { LoadingButton } from '@mui/lab';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 import {
   Box,
   Card,
-  Stack,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  InputAdornment,
-  Divider,
-  Avatar,
   Grid,
+  Stack,
+  Avatar,
+  Button,
+  Divider,
+  TextField,
+  IconButton,
+  Typography,
+  InputAdornment,
 } from '@mui/material';
-import { LoadingButton } from '@mui/lab';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 export default function UserProfilePage() {
   const [user, setUser] = useState(null);
@@ -47,7 +48,7 @@ export default function UserProfilePage() {
           return;
         }
 
-        const response = await axios.get('http://localhost:5002/member/getProfile', {
+        const response = await axios.get(`${process.env.REACT_APP_PORT}/member/getProfile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userData = response.data.data;
@@ -87,7 +88,7 @@ export default function UserProfilePage() {
     imageFormData.append('profileImage', file);
 
     try {
-      const response = await axios.post('http://localhost:5002/member/uploadProfileImage', imageFormData, {
+      const response = await axios.post(`${process.env.REACT_APP_PORT}/member/uploadProfileImage`, imageFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

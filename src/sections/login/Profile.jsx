@@ -49,7 +49,7 @@ export default function ProfilePage() {
           throw new Error('No token found');
         }
 
-        const response = await axios.get('http://localhost:5002/user/getProfile', {
+        const response = await axios.get(`${process.env.REACT_APP_PORT}/user/getProfile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userData = response.data.data;

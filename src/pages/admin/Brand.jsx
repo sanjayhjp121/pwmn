@@ -1,24 +1,24 @@
 import axios from 'axios';
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import Card from '@mui/material/Card';
 import Stack from '@mui/material/Stack';
 import Table from '@mui/material/Table';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import IconButton from '@mui/material/IconButton';
 import DialogTitle from '@mui/material/DialogTitle';
+import SearchIcon from '@mui/icons-material/Search';
 import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-import IconButton from '@mui/material/IconButton';
-import Toolbar from '@mui/material/Toolbar'; // Importing Toolbar
-import SearchIcon from '@mui/icons-material/Search';
 
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
@@ -27,7 +27,7 @@ import TableNoData from 'src/sections/admin-table/table-no-data';
 import BrandTableRow from 'src/sections/admin-table/brand-table-row';
 import BrandTableHead from 'src/sections/admin-table/user-table-head';
 import TableEmptyRows from 'src/sections/admin-table/table-empty-rows';
-import BrandTableToolbar from 'src/sections/admin-table/user-table-toolbar';
+// import BrandTableToolbar from 'src/sections/admin-table/user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from 'src/sections/admin-table/utils';
 
 export default function AgencyPage() {
@@ -36,7 +36,7 @@ export default function AgencyPage() {
   const [order, setOrder] = useState('asc');
   const [selected, setSelected] = useState([]);
   const [orderBy, setOrderBy] = useState('name');
-  const [filterName, setFilterName] = useState('');
+  const [filterName] = useState('');
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [error, setError] = useState(null);
   const [openClientDialog, setOpenClientDialog] = useState(false);
@@ -50,7 +50,7 @@ export default function AgencyPage() {
   const fetchAgencies = async () => {
     // const { agencyId } = useParams()
     try {
-      const response = await axios.get('http://localhost:5002/user/listAllAgency', {
+      const response = await axios.get(`${process.env.REACT_APP_PORT}/user/listAllAgency`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },
@@ -112,10 +112,10 @@ export default function AgencyPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
-    setPage(0);
-    setFilterName(event.target.value);
-  };
+  // const handleFilterByName = (event) => {
+  //   setPage(0);
+  //   setFilterName(event.target.value);
+  // };
 
   const handleNewClient = () => {
     setOpenClientDialog(true);
@@ -140,7 +140,7 @@ export default function AgencyPage() {
     console.log('Creating agency with data:', newAgency);
 
     try {
-      const response = await axios.post('http://localhost:5002/user/createAgency', newAgency, {
+      const response = await axios.post(`${process.env.REACT_APP_PORT}/user/createAgency`, newAgency, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

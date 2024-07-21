@@ -37,9 +37,8 @@ export default function LoginView() {
   const handleLogin = async () => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await axios.post(`http://localhost:5002/${userType}/login`, {
+      const response = await axios.post(`${process.env.REACT_APP_PORT}/${userType}/login`, {
         email,
         password,
       });
