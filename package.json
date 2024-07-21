@@ -62,5 +62,5 @@
     "vite": "^4.4.11",
     "vite-plugin-checker": "^0.6.2"
   },
-  "proxy": "http://localhost:5002/"
+  "proxy": "http://13.233.225.3:5002/"
 }
