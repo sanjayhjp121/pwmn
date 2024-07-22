@@ -32,7 +32,7 @@ export default function ForgotPassword() {
         setError(null);
 
         try {
-            const response = await axios.post(`http://13.233.225.3:5002/${userType}/forgot-password`, { email });
+            const response = await axios.post(`${process.env.API_URL}/${userType}/forgot-password`, { email });
             setSuccess(response.data.message);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to send password reset email. Please try again.');

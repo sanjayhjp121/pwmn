@@ -130,7 +130,7 @@ export default function Passwords() {
     };
 
     try {
-      const response = await axios.post(`http://13.233.225.3:5002/user/createPassword`, newSite, {
+      const response = await axios.post(`${process.env.API_URL}/user/createPassword`, newSite, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

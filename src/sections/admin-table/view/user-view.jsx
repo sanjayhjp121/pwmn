@@ -67,7 +67,7 @@ export default function UserPage() {
 
   const fetchUsers = useCallback(async () => {
     try {
-      const response = await axios.get(`http://13.233.225.3:5002/user/listAllMember`, {
+      const response = await axios.get(`${process.env.API_URL}/user/listAllMember`, {
         params: {
           agencyid: agencyId, // Send agencyId as a query parameter
         },
@@ -161,7 +161,7 @@ export default function UserPage() {
     };
 
     try {
-      const response = await axios.post(`http://13.233.225.3:5002/user/createMember`, newUser, {
+      const response = await axios.post(`${process.env.API_URL}/user/createMember`, newUser, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
         },

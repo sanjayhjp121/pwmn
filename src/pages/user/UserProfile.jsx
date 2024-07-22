@@ -48,7 +48,7 @@ export default function UserProfilePage() {
           return;
         }
 
-        const response = await axios.get(`http://13.233.225.3:5002/member/getProfile`, {
+        const response = await axios.get(`${process.env.API_URL}/member/getProfile`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         const userData = response.data.data;
@@ -88,7 +88,7 @@ export default function UserProfilePage() {
     imageFormData.append('profileImage', file);
 
     try {
-      const response = await axios.post(`http://13.233.225.3:5002/member/uploadProfileImage`, imageFormData, {
+      const response = await axios.post(`${process.env.API_URL}/member/uploadProfileImage`, imageFormData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${token}`,

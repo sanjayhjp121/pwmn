@@ -39,7 +39,7 @@ export default function LoginView() {
     setLoading(true);
     setError(null);
     try {
-      const response = await axios.post(`http://13.233.225.3:5002/${userType}/login`, {
+      const response = await axios.post(`${process.env.API_URL}/${userType}/login`, {
         email,
         password,
       });
